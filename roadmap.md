@@ -19,8 +19,8 @@ Build:
 - define a simple `Detection` representation;
 - print useful summaries;
 - introduce first simple pytest tests;
-- introduce one automatic Python formatter after basic formatting conventions
-  have been understood manually.
+- introduce Black as one consistent Python formatter after basic formatting
+  conventions have been understood manually.
 
 Learn:
 - Python modules;

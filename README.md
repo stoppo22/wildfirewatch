@@ -5,7 +5,8 @@ active-fire detections into clean, testable domain objects.
 
 > **Status:** v0.0.0 is complete. This first milestone covers project
 > foundations, a small reproducible VIIRS sample, ingestion, normalization,
-> basic error behavior, text summaries, tests, and automatic formatting.
+> basic error behavior, text summaries, tests, and consistent code formatting
+> with Black.
 
 FIRMS detections are satellite-observed thermal anomalies. They are not
 necessarily confirmed wildfires, and WildfireWatch is not an emergency,
@@ -175,7 +176,6 @@ wildfirewatch/
 │   ├── README.md
 │   └── raw/
 ├── README.md
-├── context.md
 ├── roadmap.md
 └── pyproject.toml
 ```
@@ -191,8 +191,7 @@ Core logic and tests are developed in small learning-focused steps. Mechanical
 setup and documentation work may be automated, but important design and
 algorithm decisions must remain understandable to the project owner.
 
-See [roadmap.md](roadmap.md) for planned versions and [context.md](context.md)
-for the development contract and project guardrails.
+See [roadmap.md](roadmap.md) for planned versions and project milestones.
 
 ## Current limitations
 
