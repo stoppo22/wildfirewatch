@@ -1,6 +1,6 @@
-"""Create human-readable summaries of FIRMS detections."""
+"""Create summaries of FIRMS detections and candidate clusters."""
 
-from wildfirewatch.models import Detection
+from wildfirewatch.models import ClusterSummary, Detection
 
 
 def format_detection_summary(detections: list[Detection]) -> str:
@@ -15,4 +15,26 @@ def format_detection_summary(detections: list[Detection]) -> str:
         f"Detections: {len(detections)}\n"
         f"First acquired (UTC): {first_acquired.isoformat()}\n"
         f"Last acquired (UTC): {last_acquired.isoformat()}"
+    )
+
+
+def summarize_cluster(cluster: list[Detection]) -> ClusterSummary:
+    """Calculate basic summary values for a non-empty cluster."""
+
+    if not cluster:
+        raise ValueError("Cannot summarize an empty cluster.")
+
+    detection_count = len(cluster)
+    centroid_latitude = (
+        sum(detection.latitude for detection in cluster) / detection_count
+    )
+
+    centroid_longitude = (
+        sum(detection.longitude for detection in cluster) / detection_count
+    )
+
+    return ClusterSummary(
+        detection_count=detection_count,
+        centroid_latitude=centroid_latitude,
+        centroid_longitude=centroid_longitude,
     )

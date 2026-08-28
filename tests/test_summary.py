@@ -2,8 +2,10 @@
 
 from datetime import datetime, timezone
 
-from wildfirewatch.models import Detection
-from wildfirewatch.summary import format_detection_summary
+import pytest
+
+from wildfirewatch.models import ClusterSummary, Detection
+from wildfirewatch.summary import format_detection_summary, summarize_cluster
 
 
 def test_format_detection_summary_handles_empty_list():
@@ -42,3 +44,39 @@ def test_format_detection_summary_reports_count_and_time_range():
     )
 
     assert actual == expected
+
+
+def test_summarize_cluster_calculates_count_and_centroid():
+    first = Detection(
+        latitude=10.0,
+        longitude=30.0,
+        acquired_at_utc=datetime(2026, 8, 29, 12, 0, tzinfo=timezone.utc),
+        frp=10.0,
+        confidence="n",
+        satellite="N20",
+        day_night="D",
+    )
+
+    second = Detection(
+        latitude=20.0,
+        longitude=50.0,
+        acquired_at_utc=datetime(2026, 8, 29, 12, 0, tzinfo=timezone.utc),
+        frp=10.0,
+        confidence="n",
+        satellite="N20",
+        day_night="D",
+    )
+
+    actual = summarize_cluster([first, second])
+    expected = ClusterSummary(
+        detection_count=2,
+        centroid_latitude=15.0,
+        centroid_longitude=40.0,
+    )
+
+    assert actual == expected
+
+
+def test_summarize_cluster_rejects_empty_cluster():
+    with pytest.raises(ValueError):
+        summarize_cluster([])

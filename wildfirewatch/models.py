@@ -13,3 +13,10 @@ class Detection:
     confidence: str
     satellite: str
     day_night: str
+
+
+@dataclass
+class ClusterSummary:
+    detection_count: int
+    centroid_latitude: float
+    centroid_longitude: float

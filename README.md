@@ -46,6 +46,11 @@ and C exceed the threshold. The function preserves input order within its
 output clusters. It is available as Python code but is not yet part of the
 command-line pipeline.
 
+Each non-empty cluster can be summarized as a typed `ClusterSummary` containing
+its detection count and arithmetic-mean latitude/longitude centroid. Asking for
+the summary of an empty cluster raises `ValueError`, because its centroid is
+undefined.
+
 ## Data flow
 
 ```text
@@ -71,6 +76,14 @@ FIRMS CSV
 
 The raw sample retains all original source columns. The internal model keeps
 only fields that have a concrete purpose in v0.0.0.
+
+## Cluster summary model
+
+| Field | Meaning |
+| --- | --- |
+| `detection_count` | number of detections in the cluster |
+| `centroid_latitude` | arithmetic mean of detection latitudes |
+| `centroid_longitude` | arithmetic mean of detection longitudes |
 
 ## Requirements
 
@@ -131,7 +144,8 @@ The tests currently document:
 - the complete command-line pipeline and its output;
 - geographic distance edge cases, known approximate distances, and symmetry;
 - empty, singleton, nearby, distant, and transitively connected clustering
-  cases.
+  cases;
+- cluster count, centroid, and empty-cluster error behavior.
 
 ## Format the code
 
@@ -160,10 +174,11 @@ problems.
 | Invalid date, time, or numeric value | raises `ValueError` |
 | Missing required dictionary field | raises `KeyError` |
 | Missing file | raises `FileNotFoundError` |
+| Empty cluster passed to `summarize_cluster` | raises `ValueError` |
 
-Errors are intentionally visible in v0.0.0. Silently skipping malformed rows
-could hide data loss. More contextual error messages may be introduced later
-without concealing the original failure.
+Input and parsing errors are intentionally visible in these early versions.
+Silently skipping malformed rows could hide data loss. More contextual error
+messages may be introduced later without concealing the original failure.
 
 ## Data provenance
 
@@ -229,3 +244,5 @@ See [roadmap.md](roadmap.md) for planned versions and project milestones.
   apart than the configured threshold.
 - Comparing every pair of detections has quadratic time complexity and is not
   intended yet for large datasets.
+- Arithmetic-mean latitude/longitude centroids are intended for small local
+  clusters and do not handle poles or the antimeridian specially.
