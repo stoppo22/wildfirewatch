@@ -10,6 +10,8 @@ Two equal goals:
 A polished v0.3/v0.4 is more valuable than a rushed v1.0.
 
 ## v0.0 — Foundation and FIRMS ingestion
+Status: completed as v0.0.0.
+
 Build:
 - minimal Python project structure;
 - load a small NASA FIRMS VIIRS sample;

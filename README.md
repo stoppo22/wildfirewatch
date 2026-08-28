@@ -3,15 +3,15 @@
 WildfireWatch is a learning-first Python project for turning raw NASA FIRMS
 active-fire detections into clean, testable domain objects.
 
-> **Status:** v0.0 is in progress. The repository currently covers project
+> **Status:** v0.0.0 is complete. This first milestone covers project
 > foundations, a small reproducible VIIRS sample, ingestion, normalization,
-> basic error behavior, and text summaries.
+> basic error behavior, text summaries, tests, and automatic formatting.
 
 FIRMS detections are satellite-observed thermal anomalies. They are not
 necessarily confirmed wildfires, and WildfireWatch is not an emergency,
 safety, or authoritative fire-detection system.
 
-## Current v0.0 scope
+## v0.0.0 scope
 
 The current code can:
 
@@ -54,7 +54,7 @@ FIRMS CSV
 | `day_night` | `daynight` | renamed and retained as a string |
 
 The raw sample retains all original source columns. The internal model keeps
-only fields that have a concrete purpose in v0.0.
+only fields that have a concrete purpose in v0.0.0.
 
 ## Requirements
 
@@ -104,13 +104,15 @@ python -m pytest
 
 The tests currently document:
 
+- construction of the `Detection` data model;
 - short and four-digit FIRMS acquisition times;
 - invalid acquisition times;
 - raw-row normalization;
 - missing required fields;
 - loading every row of the fixed sample;
 - empty-file behavior;
-- empty and non-empty summaries.
+- empty and non-empty summaries;
+- the complete command-line pipeline and its output.
 
 ## Format the code
 
@@ -140,7 +142,7 @@ problems.
 | Missing required dictionary field | raises `KeyError` |
 | Missing file | raises `FileNotFoundError` |
 
-Errors are intentionally visible in v0.0. Silently skipping malformed rows
+Errors are intentionally visible in v0.0.0. Silently skipping malformed rows
 could hide data loss. More contextual error messages may be introduced later
 without concealing the original failure.
 
@@ -200,4 +202,3 @@ for the development contract and project guardrails.
   anomalies.
 - The current model performs type conversion but does not yet validate
   coordinate ranges or normalize confidence/day-night codes.
-- v0.0 is not complete until its final review is finished.
