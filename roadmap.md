@@ -42,7 +42,7 @@ Done when:
 - the user can explain every important field and transformation.
 
 ## v0.1 — Geographic primitives and clustering baseline
-Status: in progress.
+Status: completed as v0.1.0.
 
 Build:
 - calculate real geographic distance between coordinates;

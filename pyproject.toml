@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "wildfirewatch"
-version = "0.0.0"
+version = "0.1.0"
 description = "Learning-first processing of NASA FIRMS active-fire detections"
 requires-python = ">=3.11"
 dependencies = []

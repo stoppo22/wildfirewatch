@@ -3,11 +3,10 @@
 WildfireWatch is a learning-first Python project for turning raw NASA FIRMS
 active-fire detections into clean, testable domain objects.
 
-> **Status:** v0.1 is in progress. The completed v0.0.0 milestone covers
-> project foundations, reproducible FIRMS ingestion, normalization, summaries,
-> tests, and consistent code formatting with Black. Current development adds
-> tested geographic distance calculations and a threshold-based clustering
-> baseline.
+> **Status:** v0.1.0 is complete. This milestone combines the reproducible
+> FIRMS ingestion foundation with tested geographic distance calculations, a
+> threshold-based clustering baseline, basic cluster summaries, and consistent
+> code formatting with Black.
 
 FIRMS detections are satellite-observed thermal anomalies. They are not
 necessarily confirmed wildfires, and WildfireWatch is not an emergency,
@@ -32,7 +31,7 @@ This version does **not** include clustering, event tracking, historical
 replay, databases, APIs, web maps, Earth Engine, priority scoring, machine
 learning, or deployment.
 
-## Current v0.1 work
+## v0.1.0 scope
 
 WildfireWatch now calculates the great-circle distance between two geographic
 coordinates with the Haversine formula and a mean Earth radius of 6,371 km.
