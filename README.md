@@ -6,7 +6,8 @@ active-fire detections into clean, testable domain objects.
 > **Status:** v0.1 is in progress. The completed v0.0.0 milestone covers
 > project foundations, reproducible FIRMS ingestion, normalization, summaries,
 > tests, and consistent code formatting with Black. Current development adds
-> tested geographic distance calculations before clustering.
+> tested geographic distance calculations and a threshold-based clustering
+> baseline.
 
 FIRMS detections are satellite-observed thermal anomalies. They are not
 necessarily confirmed wildfires, and WildfireWatch is not an emergency,
@@ -36,8 +37,14 @@ learning, or deployment.
 WildfireWatch now calculates the great-circle distance between two geographic
 coordinates with the Haversine formula and a mean Earth radius of 6,371 km.
 Tests cover identical points, one degree of longitude at the equator,
-symmetry, and an approximate Rome-to-Milan distance. Clustering is not yet
-implemented.
+symmetry, and an approximate Rome-to-Milan distance.
+
+The current clustering baseline compares every pair of detections and connects
+pairs within a configurable distance threshold. Connected detections are
+grouped transitively, so an A-B-C chain forms one candidate cluster even when A
+and C exceed the threshold. The function preserves input order within its
+output clusters. It is available as Python code but is not yet part of the
+command-line pipeline.
 
 ## Data flow
 
@@ -122,7 +129,9 @@ The tests currently document:
 - empty-file behavior;
 - empty and non-empty summaries;
 - the complete command-line pipeline and its output;
-- geographic distance edge cases, known approximate distances, and symmetry.
+- geographic distance edge cases, known approximate distances, and symmetry;
+- empty, singleton, nearby, distant, and transitively connected clustering
+  cases.
 
 ## Format the code
 
@@ -177,6 +186,7 @@ wildfirewatch/
 ├── wildfirewatch/
 │   ├── __init__.py
 │   ├── __main__.py
+│   ├── clustering.py
 │   ├── geo.py
 │   ├── ingestion.py
 │   ├── models.py
@@ -213,3 +223,9 @@ See [roadmap.md](roadmap.md) for planned versions and project milestones.
   coordinate ranges or normalize confidence/day-night codes.
 - Geographic distances approximate Earth as a sphere with a mean radius; they
   are suitable for the current baseline, not survey-grade measurements.
+- Clustering currently uses only spatial distance and ignores acquisition time,
+  FRP, confidence, and satellite source.
+- Transitive connections can create long chains whose endpoints are farther
+  apart than the configured threshold.
+- Comparing every pair of detections has quadratic time complexity and is not
+  intended yet for large datasets.
