@@ -22,6 +22,7 @@ The current code can:
 - return an empty list for an empty CSV file;
 - fail visibly when required fields or valid values are missing;
 - format detection count and acquisition-time range summaries;
+- run the current ingestion pipeline from the command line;
 - verify behavior with a small pytest suite.
 
 This version does **not** include clustering, event tracking, historical
@@ -77,19 +78,10 @@ without reinstalling the package after every edit.
 
 ## Run the current pipeline
 
-v0.0 does not have a dedicated command-line interface yet. The implemented
-pipeline can be run from Python:
+Run the committed sample from the repository root:
 
-```python
-from pathlib import Path
-
-from wildfirewatch.ingestion import load_detections
-from wildfirewatch.summary import format_detection_summary
-
-sample_path = Path("data/raw/viirs_noaa20_nrt_sample.csv")
-detections = load_detections(sample_path)
-
-print(format_detection_summary(detections))
+```bash
+python -m wildfirewatch data/raw/viirs_noaa20_nrt_sample.csv
 ```
 
 Expected output for the committed sample:
@@ -151,6 +143,7 @@ and [sample data notes](data/README.md).
 wildfirewatch/
 ├── wildfirewatch/
 │   ├── __init__.py
+│   ├── __main__.py
 │   ├── ingestion.py
 │   ├── models.py
 │   └── summary.py
@@ -186,6 +179,4 @@ for the development contract and project guardrails.
   anomalies.
 - The current model performs type conversion but does not yet validate
   coordinate ranges or normalize confidence/day-night codes.
-- There is no dedicated CLI yet.
-- v0.0 is not complete until formatting, final documentation, and a small
-  command-line entry point are added.
+- v0.0 is not complete until automatic formatting and final review are added.
