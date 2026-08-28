@@ -81,3 +81,18 @@ def test_load_detections_returns_empty_list_for_empty_file(
     detections = load_detections(empty_file)
 
     assert detections == []
+
+
+def test_detection_from_row_rejects_missing_required_field():
+    row = {
+        "longitude": "29.40531",
+        "acq_date": "2025-06-06",
+        "acq_time": "1",
+        "frp": "1.17",
+        "confidence": "n",
+        "satellite": "N20",
+        "daynight": "N",
+    }
+
+    with pytest.raises(KeyError):
+        detection_from_row(row)
