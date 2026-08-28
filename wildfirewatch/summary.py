@@ -8,12 +8,8 @@ def format_detection_summary(detections: list[Detection]) -> str:
     if not detections:
         return "Detections: 0"
 
-    first_acquired = min(
-        detection.acquired_at_utc for detection in detections
-    )
-    last_acquired = max(
-        detection.acquired_at_utc for detection in detections
-    )
+    first_acquired = min(detection.acquired_at_utc for detection in detections)
+    last_acquired = max(detection.acquired_at_utc for detection in detections)
 
     return (
         f"Detections: {len(detections)}\n"

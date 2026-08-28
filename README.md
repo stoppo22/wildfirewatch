@@ -23,6 +23,7 @@ The current code can:
 - fail visibly when required fields or valid values are missing;
 - format detection count and acquisition-time range summaries;
 - run the current ingestion pipeline from the command line;
+- format Python source and test files consistently with Black;
 - verify behavior with a small pytest suite.
 
 This version does **not** include clustering, event tracking, historical
@@ -60,8 +61,9 @@ only fields that have a concrete purpose in v0.0.
 - Python 3.11 or newer
 - Git
 
-The application currently uses only the Python standard library. `pytest` is
-an optional development dependency used for tests.
+The application currently uses only the Python standard library. `pytest` and
+Black are optional development dependencies used for tests and code
+formatting.
 
 ## Setup
 
@@ -109,6 +111,25 @@ The tests currently document:
 - loading every row of the fixed sample;
 - empty-file behavior;
 - empty and non-empty summaries.
+
+## Format the code
+
+With the virtual environment activated, apply the project's formatting rules
+to the application and tests:
+
+```bash
+python -m black wildfirewatch tests
+```
+
+To check formatting without changing any files:
+
+```bash
+python -m black --check wildfirewatch tests
+```
+
+Black formats Python source layout consistently. It does not replace tests,
+which verify behavior, or a linter, which can identify certain code-quality
+problems.
 
 ## Error behavior
 
@@ -179,4 +200,4 @@ for the development contract and project guardrails.
   anomalies.
 - The current model performs type conversion but does not yet validate
   coordinate ranges or normalize confidence/day-night codes.
-- v0.0 is not complete until automatic formatting and final review are added.
+- v0.0 is not complete until its final review is finished.

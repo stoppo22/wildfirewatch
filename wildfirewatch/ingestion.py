@@ -41,5 +41,4 @@ def load_detections(path: Path) -> list[Detection]:
         for row in reader:
             detections.append(detection_from_row(row))
 
-
     return detections

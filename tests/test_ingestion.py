@@ -48,9 +48,7 @@ def test_detection_from_row_converts_needed_fields():
     expected = Detection(
         latitude=-16.28359,
         longitude=29.40531,
-        acquired_at_utc=datetime(
-            2025, 6, 6, 0, 1, tzinfo=timezone.utc
-        ),
+        acquired_at_utc=datetime(2025, 6, 6, 0, 1, tzinfo=timezone.utc),
         frp=1.17,
         confidence="n",
         satellite="N20",
@@ -62,10 +60,7 @@ def test_detection_from_row_converts_needed_fields():
 
 def test_load_detections_loads_every_sample_row():
     sample_path = (
-        Path(__file__).parents[1]
-        / "data"
-        / "raw"
-        / "viirs_noaa20_nrt_sample.csv"
+        Path(__file__).parents[1] / "data" / "raw" / "viirs_noaa20_nrt_sample.csv"
     )
     detections = load_detections(sample_path)
 

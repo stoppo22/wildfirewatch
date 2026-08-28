@@ -11,7 +11,7 @@ def main() -> None:
     """Load a FIRMS CSV file and print a detection summary."""
     parser = argparse.ArgumentParser(
         prog="python -m wildfirewatch",
-        description="Load and summarize NASA FIRMS active-fire detections."
+        description="Load and summarize NASA FIRMS active-fire detections.",
     )
     parser.add_argument(
         "csv_path",

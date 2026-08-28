@@ -17,9 +17,7 @@ def test_format_detection_summary_reports_count_and_time_range():
     later_detection = Detection(
         latitude=0.0,
         longitude=0.0,
-        acquired_at_utc=datetime(
-            2025, 6, 6, 14, 25, tzinfo=timezone.utc
-        ),
+        acquired_at_utc=datetime(2025, 6, 6, 14, 25, tzinfo=timezone.utc),
         frp=1.0,
         confidence="n",
         satellite="N20",
@@ -28,9 +26,7 @@ def test_format_detection_summary_reports_count_and_time_range():
     earlier_detection = Detection(
         latitude=0.0,
         longitude=0.0,
-        acquired_at_utc=datetime(
-            2025, 6, 6, 0, 1, tzinfo=timezone.utc
-        ),
+        acquired_at_utc=datetime(2025, 6, 6, 0, 1, tzinfo=timezone.utc),
         frp=1.0,
         confidence="n",
         satellite="N20",

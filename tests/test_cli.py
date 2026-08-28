@@ -7,10 +7,7 @@ from pathlib import Path
 
 def test_cli_summarizes_sample_file():
     sample_path = (
-        Path(__file__).parents[1]
-        / "data"
-        / "raw"
-        / "viirs_noaa20_nrt_sample.csv"
+        Path(__file__).parents[1] / "data" / "raw" / "viirs_noaa20_nrt_sample.csv"
     )
 
     result = subprocess.run(

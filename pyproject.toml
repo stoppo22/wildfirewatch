@@ -10,7 +10,17 @@ requires-python = ">=3.11"
 dependencies = []
 
 [project.optional-dependencies]
-dev = ["pytest>=8"]
+dev = [
+    "black~=26.0",
+    "pytest>=8",
+]
+
+[tool.setuptools]
+packages = ["wildfirewatch"]
+
+[tool.black]
+line-length = 88
+target-version = ["py311"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
