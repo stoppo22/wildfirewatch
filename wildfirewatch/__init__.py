@@ -1,0 +1,1 @@
+"""WildfireWatch package."""
