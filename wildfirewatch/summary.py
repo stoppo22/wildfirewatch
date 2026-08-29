@@ -1,5 +1,6 @@
 """Create summaries of FIRMS detections and candidate clusters."""
 
+from wildfirewatch.geo import haversine_distance_km
 from wildfirewatch.models import ClusterSummary, Detection
 
 
@@ -35,6 +36,16 @@ def summarize_cluster(cluster: list[Detection]) -> ClusterSummary:
         sum(detection.longitude for detection in cluster) / detection_count
     )
 
+    max_radius_km = max(
+        haversine_distance_km(
+            centroid_latitude,
+            centroid_longitude,
+            detection.latitude,
+            detection.longitude,
+        )
+        for detection in cluster
+    )
+
     total_frp = sum(detection.frp for detection in cluster)
 
     return ClusterSummary(
@@ -44,4 +55,5 @@ def summarize_cluster(cluster: list[Detection]) -> ClusterSummary:
         first_seen_utc=first_seen_utc,
         last_seen_utc=last_seen_utc,
         total_frp=total_frp,
+        max_radius_km=max_radius_km,
     )

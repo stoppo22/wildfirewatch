@@ -21,6 +21,7 @@ class ClusterSummary:
     total_frp: float
     centroid_latitude: float
     centroid_longitude: float
+    max_radius_km: float
     first_seen_utc: datetime
     last_seen_utc: datetime
 

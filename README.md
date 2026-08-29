@@ -101,6 +101,7 @@ only fields that have a concrete purpose in v0.0.0.
 | `total_frp` | sum of detection FRP values in the cluster, in MW |
 | `centroid_latitude` | arithmetic mean of detection latitudes |
 | `centroid_longitude` | arithmetic mean of detection longitudes |
+| `max_radius_km` | maximum distance from the centroid to a detection |
 | `first_seen_utc` | earliest acquisition time in the cluster |
 | `last_seen_utc` | latest acquisition time in the cluster |
 

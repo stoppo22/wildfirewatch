@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 
 import pytest
 
-from wildfirewatch.models import ClusterSummary, Detection
+from wildfirewatch.models import Detection
 from wildfirewatch.summary import format_detection_summary, summarize_cluster
 
 
@@ -68,32 +68,40 @@ def test_summarize_cluster_calculates_basic_values():
     )
 
     actual = summarize_cluster([first, second])
-    expected = ClusterSummary(
-        detection_count=2,
-        centroid_latitude=15.0,
-        centroid_longitude=40.0,
-        total_frp=30.0,
-        first_seen_utc=datetime(
-            2026,
-            8,
-            29,
-            12,
-            0,
-            tzinfo=timezone.utc,
-        ),
-        last_seen_utc=datetime(
-            2026,
-            8,
-            29,
-            14,
-            0,
-            tzinfo=timezone.utc,
-        ),
-    )
 
-    assert actual == expected
+    assert actual.detection_count == 2
+    assert actual.centroid_latitude == 15.0
+    assert actual.centroid_longitude == 40.0
+    assert actual.total_frp == 30.0
+    assert actual.first_seen_utc == datetime(2026, 8, 29, 12, 0, tzinfo=timezone.utc)
+    assert actual.last_seen_utc == datetime(2026, 8, 29, 14, 0, tzinfo=timezone.utc)
 
 
 def test_summarize_cluster_rejects_empty_cluster():
     with pytest.raises(ValueError):
         summarize_cluster([])
+
+
+def test_summarize_cluster_calculates_max_radius():
+    first_detection = Detection(
+        latitude=0.0,
+        longitude=0.0,
+        acquired_at_utc=datetime(2026, 8, 29, 10, 0, tzinfo=timezone.utc),
+        frp=10.0,
+        confidence="n",
+        satellite="N20",
+        day_night="D",
+    )
+    second_detection = Detection(
+        latitude=0.0,
+        longitude=2.0,
+        acquired_at_utc=datetime(2026, 8, 29, 10, 0, tzinfo=timezone.utc),
+        frp=10.0,
+        confidence="n",
+        satellite="N20",
+        day_night="D",
+    )
+
+    actual = summarize_cluster([first_detection, second_detection])
+
+    assert actual.max_radius_km == pytest.approx(111.2, abs=0.1)
