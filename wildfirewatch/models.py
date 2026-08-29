@@ -1,6 +1,6 @@
 """Domain data models for WildfireWatch."""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 
 
@@ -25,6 +25,16 @@ class ClusterSummary:
     last_seen_utc: datetime
 
 
+@dataclass(frozen=True)
+class EventObservation:
+    first_seen_utc: datetime
+    last_seen_utc: datetime
+    centroid_latitude: float
+    centroid_longitude: float
+    detection_count: int
+    total_frp: float
+
+
 @dataclass
 class FireEvent:
     event_id: int
@@ -33,6 +43,7 @@ class FireEvent:
     centroid_latitude: float
     centroid_longitude: float
     detection_count: int
+    observations: list[EventObservation] = field(default_factory=list)
 
     @property
     def duration(self) -> timedelta:

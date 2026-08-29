@@ -61,8 +61,9 @@ Clusters are associated with an existing event only when both the geographic
 distance and elapsed-time thresholds are satisfied; otherwise, a new stable
 event ID is created. When several events are compatible, the nearest one is
 selected. Its cumulative centroid is updated with a detection-count-weighted
-mean. The current baseline does not yet retain centroid history, FRP history,
-movement, or growth.
+mean. Each event retains immutable observation snapshots containing the
+cluster's time range, centroid, detection count, and total FRP. The current
+baseline does not yet derive movement or growth from that history.
 
 ## Data flow
 

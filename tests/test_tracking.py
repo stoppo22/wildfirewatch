@@ -2,7 +2,7 @@
 
 from datetime import datetime, timedelta, timezone
 
-from wildfirewatch.models import Detection, FireEvent
+from wildfirewatch.models import Detection, EventObservation, FireEvent
 from wildfirewatch.tracking import update_events
 
 
@@ -44,6 +44,16 @@ def test_update_events_creates_event_when_no_events_exist():
             centroid_latitude=10.0,
             centroid_longitude=30.0,
             detection_count=1,
+            observations=[
+                EventObservation(
+                    first_seen_utc=datetime(2026, 8, 29, 12, 0, tzinfo=timezone.utc),
+                    last_seen_utc=datetime(2026, 8, 29, 12, 0, tzinfo=timezone.utc),
+                    centroid_latitude=10.0,
+                    centroid_longitude=30.0,
+                    detection_count=1,
+                    total_frp=10.0,
+                )
+            ],
         )
     ]
 
@@ -58,6 +68,16 @@ def test_update_events_updates_compatible_existing_event():
         centroid_latitude=10.0,
         centroid_longitude=30.0,
         detection_count=2,
+        observations=[
+            EventObservation(
+                first_seen_utc=datetime(2026, 8, 29, 10, 0, tzinfo=timezone.utc),
+                last_seen_utc=datetime(2026, 8, 29, 12, 0, tzinfo=timezone.utc),
+                centroid_latitude=10.0,
+                centroid_longitude=30.0,
+                detection_count=2,
+                total_frp=20.0,
+            )
+        ],
     )
     new_detection = make_detection(
         latitude=13.0,
@@ -78,6 +98,24 @@ def test_update_events_updates_compatible_existing_event():
             centroid_latitude=11.0,
             centroid_longitude=31.0,
             detection_count=3,
+            observations=[
+                EventObservation(
+                    first_seen_utc=datetime(2026, 8, 29, 10, 0, tzinfo=timezone.utc),
+                    last_seen_utc=datetime(2026, 8, 29, 12, 0, tzinfo=timezone.utc),
+                    centroid_latitude=10.0,
+                    centroid_longitude=30.0,
+                    detection_count=2,
+                    total_frp=20.0,
+                ),
+                EventObservation(
+                    first_seen_utc=datetime(2026, 8, 29, 14, 0, tzinfo=timezone.utc),
+                    last_seen_utc=datetime(2026, 8, 29, 14, 0, tzinfo=timezone.utc),
+                    centroid_latitude=13.0,
+                    centroid_longitude=33.0,
+                    detection_count=1,
+                    total_frp=10.0,
+                ),
+            ],
         )
     ]
 
@@ -121,6 +159,16 @@ def test_update_events_creates_new_event_when_time_gap_is_too_large():
             centroid_latitude=10.0,
             centroid_longitude=30.0,
             detection_count=1,
+            observations=[
+                EventObservation(
+                    first_seen_utc=datetime(2026, 8, 29, 20, 0, tzinfo=timezone.utc),
+                    last_seen_utc=datetime(2026, 8, 29, 20, 0, tzinfo=timezone.utc),
+                    centroid_latitude=10.0,
+                    centroid_longitude=30.0,
+                    detection_count=1,
+                    total_frp=10.0,
+                )
+            ],
         ),
     ]
 
@@ -164,6 +212,16 @@ def test_update_events_creates_new_event_when_distance_is_too_large():
             centroid_latitude=11.0,
             centroid_longitude=30.0,
             detection_count=1,
+            observations=[
+                EventObservation(
+                    first_seen_utc=datetime(2026, 8, 29, 14, 0, tzinfo=timezone.utc),
+                    last_seen_utc=datetime(2026, 8, 29, 14, 0, tzinfo=timezone.utc),
+                    centroid_latitude=11.0,
+                    centroid_longitude=30.0,
+                    detection_count=1,
+                    total_frp=10.0,
+                )
+            ],
         ),
     ]
 
@@ -216,6 +274,16 @@ def test_update_events_chooses_nearest_compatible_event():
             centroid_latitude=0.0,
             centroid_longitude=0.02,
             detection_count=2,
+            observations=[
+                EventObservation(
+                    first_seen_utc=datetime(2026, 8, 29, 14, 0, tzinfo=timezone.utc),
+                    last_seen_utc=datetime(2026, 8, 29, 14, 0, tzinfo=timezone.utc),
+                    centroid_latitude=0.0,
+                    centroid_longitude=0.02,
+                    detection_count=1,
+                    total_frp=10.0,
+                )
+            ],
         ),
     ]
 

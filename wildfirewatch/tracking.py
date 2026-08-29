@@ -3,7 +3,7 @@
 from datetime import timedelta
 
 from wildfirewatch.geo import haversine_distance_km
-from wildfirewatch.models import Detection, FireEvent
+from wildfirewatch.models import Detection, EventObservation, FireEvent
 from wildfirewatch.summary import summarize_cluster
 
 
@@ -21,6 +21,14 @@ def update_events(
 
     for cluster in clusters:
         summary = summarize_cluster(cluster)
+        observation = EventObservation(
+            first_seen_utc=summary.first_seen_utc,
+            last_seen_utc=summary.last_seen_utc,
+            centroid_latitude=summary.centroid_latitude,
+            centroid_longitude=summary.centroid_longitude,
+            detection_count=summary.detection_count,
+            total_frp=summary.total_frp,
+        )
 
         matching_event_index = None
         closest_distance = None
@@ -62,6 +70,7 @@ def update_events(
                 centroid_latitude=new_centroid_latitude,
                 centroid_longitude=new_centroid_longitude,
                 detection_count=new_detection_count,
+                observations=event.observations + [observation],
             )
             continue
 
@@ -72,6 +81,7 @@ def update_events(
             detection_count=summary.detection_count,
             first_seen_utc=summary.first_seen_utc,
             last_seen_utc=summary.last_seen_utc,
+            observations=[observation],
         )
         updated_events.append(new_event)
         next_event_id += 1
