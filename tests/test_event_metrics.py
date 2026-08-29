@@ -95,3 +95,17 @@ def test_calculate_radius_change_km_compares_first_and_last_observation():
     expected = 3.0
 
     assert actual == expected
+
+
+def test_history_metrics_are_zero_without_observations():
+    event = FireEvent(
+        event_id=1,
+        first_seen_utc=datetime(2026, 8, 29, 10, 0, tzinfo=timezone.utc),
+        last_seen_utc=datetime(2026, 8, 29, 10, 0, tzinfo=timezone.utc),
+        centroid_latitude=0.0,
+        centroid_longitude=0.0,
+        detection_count=0,
+    )
+
+    assert calculate_centroid_path_km(event) == 0.0
+    assert calculate_radius_change_km(event) == 0.0

@@ -295,3 +295,24 @@ def test_update_events_chooses_nearest_compatible_event():
     ]
 
     assert actual == expected
+
+
+def test_update_events_keeps_existing_event_when_no_clusters_arrive():
+    event = FireEvent(
+        event_id=7,
+        first_seen_utc=datetime(2026, 8, 29, 10, 0, tzinfo=timezone.utc),
+        last_seen_utc=datetime(2026, 8, 29, 12, 0, tzinfo=timezone.utc),
+        centroid_latitude=0.0,
+        centroid_longitude=0.0,
+        detection_count=1,
+    )
+
+    actual = update_events(
+        events=[event],
+        clusters=[],
+        max_distance_km=10.0,
+        max_time_gap=timedelta(hours=6),
+    )
+    expected = [event]
+
+    assert actual == expected

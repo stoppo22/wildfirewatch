@@ -1,12 +1,11 @@
 # WildfireWatch
 
 WildfireWatch is a learning-first Python project for turning raw NASA FIRMS
-active-fire detections into clean, testable domain objects.
+active-fire detections into clean, tested candidate fire events.
 
-> **Status:** v0.2 is in progress. The completed v0.1.0 milestone combines the
-> reproducible FIRMS ingestion foundation with tested geographic distance
-> calculations, a threshold-based clustering baseline, and basic cluster
-> summaries. Current development adds event state and time-aware association.
+> **Status:** v0.2.0 is complete. It adds tested spatiotemporal event tracking,
+> a history of immutable observation snapshots, FRP and spatial summaries, and
+> interpretable movement/growth proxies to the v0.1.0 clustering baseline.
 
 FIRMS detections are satellite-observed thermal anomalies. They are not
 necessarily confirmed wildfires, and WildfireWatch is not an emergency,
@@ -50,7 +49,7 @@ its detection count and arithmetic-mean latitude/longitude centroid. Asking for
 the summary of an empty cluster raises `ValueError`, because its centroid is
 undefined.
 
-## Current v0.2 work
+## v0.2.0 scope
 
 `ClusterSummary` now also records the earliest and latest acquisition times in
 each cluster. A minimal `FireEvent` model records a stable integer ID, first and
@@ -71,6 +70,8 @@ because the net value alone can hide expansion and contraction between them.
 
 ## Data flow
 
+The command-line program currently runs the reproducible ingestion path:
+
 ```text
 FIRMS CSV
     -> csv.DictReader
@@ -78,6 +79,17 @@ FIRMS CSV
     -> detection_from_row
     -> Detection objects
     -> human-readable summary
+```
+
+The Python library also supports the v0.2 processing path:
+
+```text
+Detection objects
+    -> spatial clusters
+    -> ClusterSummary objects
+    -> spatiotemporal association
+    -> FireEvent objects with observation history
+    -> centroid-path and radius-change metrics
 ```
 
 ## Detection model
@@ -167,7 +179,12 @@ The tests currently document:
 - geographic distance edge cases, known approximate distances, and symmetry;
 - empty, singleton, nearby, distant, and transitively connected clustering
   cases;
-- cluster count, centroid, temporal range, and empty-cluster error behavior.
+- cluster count, centroid, temporal range, FRP, radius, and empty-cluster error
+  behavior;
+- event creation, compatible updates, stable IDs, spatial/temporal non-matches,
+  nearest-event selection, and observation-free windows;
+- event duration, observation history, centroid path, radius change, and empty
+  history behavior.
 
 ## Format the code
 
@@ -224,10 +241,12 @@ wildfirewatch/
 │   ├── __init__.py
 │   ├── __main__.py
 │   ├── clustering.py
+│   ├── event_metrics.py
 │   ├── geo.py
 │   ├── ingestion.py
 │   ├── models.py
-│   └── summary.py
+│   ├── summary.py
+│   └── tracking.py
 ├── tests/
 ├── data/
 │   ├── README.md
@@ -268,3 +287,14 @@ See [roadmap.md](roadmap.md) for planned versions and project milestones.
   intended yet for large datasets.
 - Arithmetic-mean latitude/longitude centroids are intended for small local
   clusters and do not handle poles or the antimeridian specially.
+- Event association assumes observation windows are processed chronologically
+  and uses fixed spatial and temporal thresholds rather than a validated
+  probabilistic model.
+- When several events are compatible, the nearest centroid wins; equal-distance
+  ties retain the first event in input order.
+- Events are retained unchanged during empty observation windows; v0.2.0 does
+  not assign active/inactive status or prune old event history.
+- Centroid path and radius change describe changes in satellite observations;
+  they are not validated measurements of physical fire spread or burned area.
+- Clustering, tracking, and event metrics are Python-library features and are
+  not yet connected to the command-line ingestion pipeline.
