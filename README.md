@@ -62,8 +62,10 @@ distance and elapsed-time thresholds are satisfied; otherwise, a new stable
 event ID is created. When several events are compatible, the nearest one is
 selected. Its cumulative centroid is updated with a detection-count-weighted
 mean. Each event retains immutable observation snapshots containing the
-cluster's time range, centroid, detection count, and total FRP. The current
-baseline does not yet derive movement or growth from that history.
+cluster's time range, centroid, detection count, and total FRP. The cumulative
+path between consecutive centroids can be calculated from that history. This
+is an observation-based movement proxy, not proof of physical fire movement;
+the current baseline does not yet derive spatial growth.
 
 ## Data flow
 
