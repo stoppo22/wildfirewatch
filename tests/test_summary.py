@@ -46,7 +46,7 @@ def test_format_detection_summary_reports_count_and_time_range():
     assert actual == expected
 
 
-def test_summarize_cluster_calculates_count_and_centroid():
+def test_summarize_cluster_calculates_basic_values():
     first = Detection(
         latitude=10.0,
         longitude=30.0,
@@ -60,7 +60,7 @@ def test_summarize_cluster_calculates_count_and_centroid():
     second = Detection(
         latitude=20.0,
         longitude=50.0,
-        acquired_at_utc=datetime(2026, 8, 29, 12, 0, tzinfo=timezone.utc),
+        acquired_at_utc=datetime(2026, 8, 29, 14, 0, tzinfo=timezone.utc),
         frp=10.0,
         confidence="n",
         satellite="N20",
@@ -72,6 +72,22 @@ def test_summarize_cluster_calculates_count_and_centroid():
         detection_count=2,
         centroid_latitude=15.0,
         centroid_longitude=40.0,
+        first_seen_utc=datetime(
+            2026,
+            8,
+            29,
+            12,
+            0,
+            tzinfo=timezone.utc,
+        ),
+        last_seen_utc=datetime(
+            2026,
+            8,
+            29,
+            14,
+            0,
+            tzinfo=timezone.utc,
+        ),
     )
 
     assert actual == expected

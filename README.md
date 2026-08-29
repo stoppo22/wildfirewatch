@@ -3,10 +3,10 @@
 WildfireWatch is a learning-first Python project for turning raw NASA FIRMS
 active-fire detections into clean, testable domain objects.
 
-> **Status:** v0.1.0 is complete. This milestone combines the reproducible
-> FIRMS ingestion foundation with tested geographic distance calculations, a
-> threshold-based clustering baseline, basic cluster summaries, and consistent
-> code formatting with Black.
+> **Status:** v0.2 is in progress. The completed v0.1.0 milestone combines the
+> reproducible FIRMS ingestion foundation with tested geographic distance
+> calculations, a threshold-based clustering baseline, and basic cluster
+> summaries. Current development adds event state and time-aware association.
 
 FIRMS detections are satellite-observed thermal anomalies. They are not
 necessarily confirmed wildfires, and WildfireWatch is not an emergency,
@@ -50,6 +50,13 @@ its detection count and arithmetic-mean latitude/longitude centroid. Asking for
 the summary of an empty cluster raises `ValueError`, because its centroid is
 undefined.
 
+## Current v0.2 work
+
+`ClusterSummary` now also records the earliest and latest acquisition times in
+each cluster. A minimal `FireEvent` model records a stable integer ID, first and
+last observation times, latest centroid, and cumulative detection count. Event
+association is not yet implemented.
+
 ## Data flow
 
 ```text
@@ -83,6 +90,8 @@ only fields that have a concrete purpose in v0.0.0.
 | `detection_count` | number of detections in the cluster |
 | `centroid_latitude` | arithmetic mean of detection latitudes |
 | `centroid_longitude` | arithmetic mean of detection longitudes |
+| `first_seen_utc` | earliest acquisition time in the cluster |
+| `last_seen_utc` | latest acquisition time in the cluster |
 
 ## Requirements
 
@@ -144,7 +153,7 @@ The tests currently document:
 - geographic distance edge cases, known approximate distances, and symmetry;
 - empty, singleton, nearby, distant, and transitively connected clustering
   cases;
-- cluster count, centroid, and empty-cluster error behavior.
+- cluster count, centroid, temporal range, and empty-cluster error behavior.
 
 ## Format the code
 

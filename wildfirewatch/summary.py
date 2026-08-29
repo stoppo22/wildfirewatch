@@ -25,6 +25,8 @@ def summarize_cluster(cluster: list[Detection]) -> ClusterSummary:
         raise ValueError("Cannot summarize an empty cluster.")
 
     detection_count = len(cluster)
+    first_seen_utc = min(detection.acquired_at_utc for detection in cluster)
+    last_seen_utc = max(detection.acquired_at_utc for detection in cluster)
     centroid_latitude = (
         sum(detection.latitude for detection in cluster) / detection_count
     )
@@ -37,4 +39,6 @@ def summarize_cluster(cluster: list[Detection]) -> ClusterSummary:
         detection_count=detection_count,
         centroid_latitude=centroid_latitude,
         centroid_longitude=centroid_longitude,
+        first_seen_utc=first_seen_utc,
+        last_seen_utc=last_seen_utc,
     )

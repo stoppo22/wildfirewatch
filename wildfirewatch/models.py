@@ -20,3 +20,15 @@ class ClusterSummary:
     detection_count: int
     centroid_latitude: float
     centroid_longitude: float
+    first_seen_utc: datetime
+    last_seen_utc: datetime
+
+
+@dataclass
+class FireEvent:
+    event_id: int
+    first_seen_utc: datetime
+    last_seen_utc: datetime
+    centroid_latitude: float
+    centroid_longitude: float
+    detection_count: int

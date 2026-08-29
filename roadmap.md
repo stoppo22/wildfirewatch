@@ -64,6 +64,8 @@ Done when:
 - the user can explain the algorithm and its time complexity.
 
 ## v0.2 — Spatiotemporal event tracking
+Status: in progress.
+
 Build:
 - associate clusters across observation windows into candidate `FireEvent`s;
 - track first_seen, last_seen, duration, detection_count, centroid history, FRP history, movement and a simple spatial-growth proxy.
