@@ -95,6 +95,7 @@ only fields that have a concrete purpose in v0.0.0.
 | Field | Meaning |
 | --- | --- |
 | `detection_count` | number of detections in the cluster |
+| `total_frp` | sum of detection FRP values in the cluster, in MW |
 | `centroid_latitude` | arithmetic mean of detection latitudes |
 | `centroid_longitude` | arithmetic mean of detection longitudes |
 | `first_seen_utc` | earliest acquisition time in the cluster |

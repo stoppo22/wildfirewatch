@@ -61,7 +61,7 @@ def test_summarize_cluster_calculates_basic_values():
         latitude=20.0,
         longitude=50.0,
         acquired_at_utc=datetime(2026, 8, 29, 14, 0, tzinfo=timezone.utc),
-        frp=10.0,
+        frp=20.0,
         confidence="n",
         satellite="N20",
         day_night="D",
@@ -72,6 +72,7 @@ def test_summarize_cluster_calculates_basic_values():
         detection_count=2,
         centroid_latitude=15.0,
         centroid_longitude=40.0,
+        total_frp=30.0,
         first_seen_utc=datetime(
             2026,
             8,

@@ -18,6 +18,7 @@ class Detection:
 @dataclass
 class ClusterSummary:
     detection_count: int
+    total_frp: float
     centroid_latitude: float
     centroid_longitude: float
     first_seen_utc: datetime

@@ -35,10 +35,13 @@ def summarize_cluster(cluster: list[Detection]) -> ClusterSummary:
         sum(detection.longitude for detection in cluster) / detection_count
     )
 
+    total_frp = sum(detection.frp for detection in cluster)
+
     return ClusterSummary(
         detection_count=detection_count,
         centroid_latitude=centroid_latitude,
         centroid_longitude=centroid_longitude,
         first_seen_utc=first_seen_utc,
         last_seen_utc=last_seen_utc,
+        total_frp=total_frp,
     )
