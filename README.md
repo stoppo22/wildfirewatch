@@ -57,8 +57,10 @@ each cluster. A minimal `FireEvent` model records a stable integer ID, first and
 last observation times, a centroid, and cumulative detection count.
 Clusters are associated with an existing event only when both the geographic
 distance and elapsed-time thresholds are satisfied; otherwise, a new stable
-event ID is created. The current baseline selects the first compatible event
-and does not yet update centroid history, FRP history, movement, or growth.
+event ID is created. When several events are compatible, the nearest one is
+selected. Its cumulative centroid is updated with a detection-count-weighted
+mean. The current baseline does not yet retain centroid history, FRP history,
+movement, or growth.
 
 ## Data flow
 

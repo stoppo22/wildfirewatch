@@ -47,8 +47,8 @@ def test_update_events_updates_compatible_existing_event():
         detection_count=2,
     )
     new_detection = Detection(
-        latitude=10.0,
-        longitude=30.0,
+        latitude=13.0,
+        longitude=33.0,
         acquired_at_utc=datetime(2026, 8, 29, 14, 0, tzinfo=timezone.utc),
         frp=10.0,
         confidence="n",
@@ -58,7 +58,7 @@ def test_update_events_updates_compatible_existing_event():
     actual = update_events(
         events=[existing_event],
         clusters=[[new_detection]],
-        max_distance_km=10.0,
+        max_distance_km=1000.0,
         max_time_gap=timedelta(hours=6),
     )
     expected = [
@@ -66,8 +66,8 @@ def test_update_events_updates_compatible_existing_event():
             event_id=7,
             first_seen_utc=datetime(2026, 8, 29, 10, 0, tzinfo=timezone.utc),
             last_seen_utc=datetime(2026, 8, 29, 14, 0, tzinfo=timezone.utc),
-            centroid_latitude=10.0,
-            centroid_longitude=30.0,
+            centroid_latitude=11.0,
+            centroid_longitude=31.0,
             detection_count=3,
         )
     ]
@@ -163,6 +163,62 @@ def test_update_events_creates_new_event_when_distance_is_too_large():
             centroid_latitude=11.0,
             centroid_longitude=30.0,
             detection_count=1,
+        ),
+    ]
+
+    assert actual == expected
+
+
+def test_update_events_chooses_nearest_compatible_event():
+    event_7 = FireEvent(
+        event_id=7,
+        first_seen_utc=datetime(2026, 8, 29, 10, 0, tzinfo=timezone.utc),
+        last_seen_utc=datetime(2026, 8, 29, 12, 0, tzinfo=timezone.utc),
+        centroid_latitude=0.0,
+        centroid_longitude=0.0,
+        detection_count=1,
+    )
+    event_8 = FireEvent(
+        event_id=8,
+        first_seen_utc=datetime(2026, 8, 29, 10, 0, tzinfo=timezone.utc),
+        last_seen_utc=datetime(2026, 8, 29, 12, 0, tzinfo=timezone.utc),
+        centroid_latitude=0.0,
+        centroid_longitude=0.02,
+        detection_count=1,
+    )
+
+    new_detection = Detection(
+        latitude=0.0,
+        longitude=0.02,
+        acquired_at_utc=datetime(2026, 8, 29, 14, 0, tzinfo=timezone.utc),
+        frp=10.0,
+        confidence="n",
+        satellite="N20",
+        day_night="D",
+    )
+
+    actual = update_events(
+        events=[event_7, event_8],
+        clusters=[[new_detection]],
+        max_distance_km=10.0,
+        max_time_gap=timedelta(hours=6),
+    )
+    expected = [
+        FireEvent(
+            event_id=7,
+            first_seen_utc=datetime(2026, 8, 29, 10, 0, tzinfo=timezone.utc),
+            last_seen_utc=datetime(2026, 8, 29, 12, 0, tzinfo=timezone.utc),
+            centroid_latitude=0.0,
+            centroid_longitude=0.0,
+            detection_count=1,
+        ),
+        FireEvent(
+            event_id=8,
+            first_seen_utc=datetime(2026, 8, 29, 10, 0, tzinfo=timezone.utc),
+            last_seen_utc=datetime(2026, 8, 29, 14, 0, tzinfo=timezone.utc),
+            centroid_latitude=0.0,
+            centroid_longitude=0.02,
+            detection_count=2,
         ),
     ]
 

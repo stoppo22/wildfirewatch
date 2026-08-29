@@ -23,6 +23,7 @@ def update_events(
         summary = summarize_cluster(cluster)
 
         matching_event_index = None
+        closest_distance = None
 
         for index, event in enumerate(updated_events):
             distance = haversine_distance_km(
@@ -33,19 +34,34 @@ def update_events(
             )
             time_gap = summary.first_seen_utc - event.last_seen_utc
 
-            if distance <= max_distance_km and timedelta(0) <= time_gap <= max_time_gap:
+            if (
+                distance <= max_distance_km
+                and timedelta(0) <= time_gap <= max_time_gap
+                and (closest_distance is None or distance < closest_distance)
+            ):
                 matching_event_index = index
-                break
+                closest_distance = distance
 
         if matching_event_index is not None:
             event = updated_events[matching_event_index]
+            new_detection_count = event.detection_count + summary.detection_count
+            new_centroid_latitude = (
+                event.centroid_latitude * event.detection_count
+                + summary.centroid_latitude * summary.detection_count
+            ) / new_detection_count
+
+            new_centroid_longitude = (
+                event.centroid_longitude * event.detection_count
+                + summary.centroid_longitude * summary.detection_count
+            ) / new_detection_count
+
             updated_events[matching_event_index] = FireEvent(
                 event_id=event.event_id,
                 first_seen_utc=min(event.first_seen_utc, summary.first_seen_utc),
                 last_seen_utc=max(event.last_seen_utc, summary.last_seen_utc),
-                centroid_latitude=event.centroid_latitude,
-                centroid_longitude=event.centroid_longitude,
-                detection_count=event.detection_count + summary.detection_count,
+                centroid_latitude=new_centroid_latitude,
+                centroid_longitude=new_centroid_longitude,
+                detection_count=new_detection_count,
             )
             continue
 
