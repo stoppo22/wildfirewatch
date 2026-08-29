@@ -54,8 +54,11 @@ undefined.
 
 `ClusterSummary` now also records the earliest and latest acquisition times in
 each cluster. A minimal `FireEvent` model records a stable integer ID, first and
-last observation times, latest centroid, and cumulative detection count. Event
-association is not yet implemented.
+last observation times, a centroid, and cumulative detection count.
+Clusters are associated with an existing event only when both the geographic
+distance and elapsed-time thresholds are satisfied; otherwise, a new stable
+event ID is created. The current baseline selects the first compatible event
+and does not yet update centroid history, FRP history, movement, or growth.
 
 ## Data flow
 
