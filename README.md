@@ -54,7 +54,9 @@ undefined.
 
 `ClusterSummary` now also records the earliest and latest acquisition times in
 each cluster. A minimal `FireEvent` model records a stable integer ID, first and
-last observation times, a centroid, and cumulative detection count.
+last observation times, a centroid, and cumulative detection count. Its
+`duration` property is calculated from the first and last observation times, so
+the same information is not stored twice.
 Clusters are associated with an existing event only when both the geographic
 distance and elapsed-time thresholds are satisfied; otherwise, a new stable
 event ID is created. When several events are compatible, the nearest one is

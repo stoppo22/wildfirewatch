@@ -1,7 +1,7 @@
 """Domain data models for WildfireWatch."""
 
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 @dataclass
@@ -32,3 +32,8 @@ class FireEvent:
     centroid_latitude: float
     centroid_longitude: float
     detection_count: int
+
+    @property
+    def duration(self) -> timedelta:
+        """Return the elapsed time between the first and latest observation."""
+        return self.last_seen_utc - self.first_seen_utc
