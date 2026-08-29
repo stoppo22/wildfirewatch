@@ -19,3 +19,14 @@ def calculate_centroid_path_km(event: FireEvent) -> float:
         )
 
     return total_distance_km
+
+
+def calculate_radius_change_km(event: FireEvent) -> float:
+    """Return the radius difference between the last and first observation."""
+    if len(event.observations) < 2:
+        return 0.0
+
+    first_observation = event.observations[0]
+    last_observation = event.observations[-1]
+
+    return last_observation.max_radius_km - first_observation.max_radius_km

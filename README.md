@@ -64,8 +64,10 @@ selected. Its cumulative centroid is updated with a detection-count-weighted
 mean. Each event retains immutable observation snapshots containing the
 cluster's time range, centroid, detection count, and total FRP. The cumulative
 path between consecutive centroids can be calculated from that history. This
-is an observation-based movement proxy, not proof of physical fire movement;
-the current baseline does not yet derive spatial growth.
+is an observation-based movement proxy, not proof of physical fire movement.
+The difference between the last and first observed radii provides a simple net
+spatial-growth proxy. All intermediate radii remain available in the history,
+because the net value alone can hide expansion and contraction between them.
 
 ## Data flow
 

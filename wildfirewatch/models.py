@@ -32,6 +32,7 @@ class EventObservation:
     last_seen_utc: datetime
     centroid_latitude: float
     centroid_longitude: float
+    max_radius_km: float
     detection_count: int
     total_frp: float
 

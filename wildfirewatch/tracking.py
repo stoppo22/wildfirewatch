@@ -28,6 +28,7 @@ def update_events(
             centroid_longitude=summary.centroid_longitude,
             detection_count=summary.detection_count,
             total_frp=summary.total_frp,
+            max_radius_km=summary.max_radius_km,
         )
 
         matching_event_index = None

@@ -52,6 +52,7 @@ def test_update_events_creates_event_when_no_events_exist():
                     centroid_longitude=30.0,
                     detection_count=1,
                     total_frp=10.0,
+                    max_radius_km=0.0,
                 )
             ],
         )
@@ -76,6 +77,7 @@ def test_update_events_updates_compatible_existing_event():
                 centroid_longitude=30.0,
                 detection_count=2,
                 total_frp=20.0,
+                max_radius_km=0.0,
             )
         ],
     )
@@ -106,6 +108,7 @@ def test_update_events_updates_compatible_existing_event():
                     centroid_longitude=30.0,
                     detection_count=2,
                     total_frp=20.0,
+                    max_radius_km=0.0,
                 ),
                 EventObservation(
                     first_seen_utc=datetime(2026, 8, 29, 14, 0, tzinfo=timezone.utc),
@@ -114,6 +117,7 @@ def test_update_events_updates_compatible_existing_event():
                     centroid_longitude=33.0,
                     detection_count=1,
                     total_frp=10.0,
+                    max_radius_km=0.0,
                 ),
             ],
         )
@@ -167,6 +171,7 @@ def test_update_events_creates_new_event_when_time_gap_is_too_large():
                     centroid_longitude=30.0,
                     detection_count=1,
                     total_frp=10.0,
+                    max_radius_km=0.0,
                 )
             ],
         ),
@@ -220,6 +225,7 @@ def test_update_events_creates_new_event_when_distance_is_too_large():
                     centroid_longitude=30.0,
                     detection_count=1,
                     total_frp=10.0,
+                    max_radius_km=0.0,
                 )
             ],
         ),
@@ -282,6 +288,7 @@ def test_update_events_chooses_nearest_compatible_event():
                     centroid_longitude=0.02,
                     detection_count=1,
                     total_frp=10.0,
+                    max_radius_km=0.0,
                 )
             ],
         ),
