@@ -6,15 +6,28 @@ from wildfirewatch.models import Detection, FireEvent
 from wildfirewatch.tracking import update_events
 
 
-def test_update_events_creates_event_when_no_events_exist():
-    detection = Detection(
-        latitude=10.0,
-        longitude=30.0,
-        acquired_at_utc=datetime(2026, 8, 29, 12, 0, tzinfo=timezone.utc),
+def make_detection(
+    latitude: float,
+    longitude: float,
+    acquired_at_utc: datetime,
+) -> Detection:
+    """Create a detection with standard values for tracking tests."""
+    return Detection(
+        latitude=latitude,
+        longitude=longitude,
+        acquired_at_utc=acquired_at_utc,
         frp=10.0,
         confidence="n",
         satellite="N20",
         day_night="D",
+    )
+
+
+def test_update_events_creates_event_when_no_events_exist():
+    detection = make_detection(
+        latitude=10.0,
+        longitude=30.0,
+        acquired_at_utc=datetime(2026, 8, 29, 12, 0, tzinfo=timezone.utc),
     )
     cluster = [detection]
     actual = update_events(
@@ -46,14 +59,10 @@ def test_update_events_updates_compatible_existing_event():
         centroid_longitude=30.0,
         detection_count=2,
     )
-    new_detection = Detection(
+    new_detection = make_detection(
         latitude=13.0,
         longitude=33.0,
         acquired_at_utc=datetime(2026, 8, 29, 14, 0, tzinfo=timezone.utc),
-        frp=10.0,
-        confidence="n",
-        satellite="N20",
-        day_night="D",
     )
     actual = update_events(
         events=[existing_event],
@@ -84,14 +93,10 @@ def test_update_events_creates_new_event_when_time_gap_is_too_large():
         centroid_longitude=30.0,
         detection_count=2,
     )
-    new_detection = Detection(
+    new_detection = make_detection(
         latitude=10.0,
         longitude=30.0,
         acquired_at_utc=datetime(2026, 8, 29, 20, 0, tzinfo=timezone.utc),
-        frp=10.0,
-        confidence="n",
-        satellite="N20",
-        day_night="D",
     )
     actual = update_events(
         events=[existing_event],
@@ -131,14 +136,10 @@ def test_update_events_creates_new_event_when_distance_is_too_large():
         centroid_longitude=30.0,
         detection_count=2,
     )
-    new_detection = Detection(
+    new_detection = make_detection(
         latitude=11.0,
         longitude=30.0,
         acquired_at_utc=datetime(2026, 8, 29, 14, 0, tzinfo=timezone.utc),
-        frp=10.0,
-        confidence="n",
-        satellite="N20",
-        day_night="D",
     )
     actual = update_events(
         events=[existing_event],
@@ -187,14 +188,10 @@ def test_update_events_chooses_nearest_compatible_event():
         detection_count=1,
     )
 
-    new_detection = Detection(
+    new_detection = make_detection(
         latitude=0.0,
         longitude=0.02,
         acquired_at_utc=datetime(2026, 8, 29, 14, 0, tzinfo=timezone.utc),
-        frp=10.0,
-        confidence="n",
-        satellite="N20",
-        day_night="D",
     )
 
     actual = update_events(
