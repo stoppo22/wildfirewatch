@@ -7,7 +7,9 @@ name = "wildfirewatch"
 version = "0.2.0"
 description = "Learning-first processing of NASA FIRMS active-fire detections"
 requires-python = ">=3.11"
-dependencies = []
+dependencies = [
+    "python-dotenv>=1.0,<2",
+]
 
 [project.optional-dependencies]
 dev = [

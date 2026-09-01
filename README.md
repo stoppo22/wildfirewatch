@@ -3,9 +3,9 @@
 WildfireWatch is a learning-first Python project for turning raw NASA FIRMS
 active-fire detections into clean, tested candidate fire events.
 
-> **Status:** v0.2.0 is complete. It adds tested spatiotemporal event tracking,
-> a history of immutable observation snapshots, FRP and spatial summaries, and
-> interpretable movement/growth proxies to the v0.1.0 clustering baseline.
+> **Status:** v0.2.0 is complete. v0.3.0 is in progress with controlled
+> evaluation metrics, threshold-sensitivity experiments, and an initial
+> chronological replay of a historical FIRMS dataset around Lahaina.
 
 FIRMS detections are satellite-observed thermal anomalies. They are not
 necessarily confirmed wildfires, and WildfireWatch is not an emergency,
@@ -92,6 +92,29 @@ Detection objects
     -> centroid-path and radius-change metrics
 ```
 
+The in-progress v0.3 evaluation path is:
+
+```text
+controlled labels + clusters
+    -> real v0.2 tracker assignments
+    -> false-split, false-merge, reduction, and continuity metrics
+    -> spatial/temporal threshold experiments
+    -> measured JSON reports
+```
+
+The historical replay path is:
+
+```text
+saved historical FIRMS CSV
+    -> detections grouped by acquisition timestamp
+    -> clustering of only the new detections in each frame
+    -> incremental event updates without future information
+    -> immutable chronological frame snapshots
+```
+
+See [evaluation and replay notes](docs/evaluation-and-replay.md) for the
+methodology, commands, measured results, and limitations.
+
 ## Detection model
 
 | Internal field | FIRMS source | Normalization |
@@ -124,9 +147,9 @@ only fields that have a concrete purpose in v0.0.0.
 - Python 3.11 or newer
 - Git
 
-The application currently uses only the Python standard library. `pytest` and
-Black are optional development dependencies used for tests and code
-formatting.
+The application uses `python-dotenv` to load the private FIRMS MAP_KEY from a
+local `.env` file. `pytest` and Black are optional development dependencies
+used for tests and code formatting.
 
 ## Setup
 
@@ -164,6 +187,25 @@ With the virtual environment activated:
 ```bash
 python -m pytest
 ```
+
+## Run the v0.3 experiments
+
+Regenerate the controlled synthetic threshold report:
+
+```bash
+python scripts/run_synthetic_evaluation.py
+```
+
+Regenerate the initial Lahaina historical replay:
+
+```bash
+python scripts/run_historical_replay.py \
+  data/raw/viirs_noaa20_sp_lahaina_2023-08-08_2023-08-12.csv
+```
+
+The historical downloader reads `FIRMS_MAP_KEY` from a local `.env` file that
+is ignored by Git. Copy `.env.example` to `.env`, replace the placeholder, and
+never commit or share the resulting file.
 
 The tests currently document:
 
@@ -233,6 +275,13 @@ fire detection product with a nominal 375 m resolution. See the
 [NASA Earthdata product page](https://www.earthdata.nasa.gov/data/catalog/lancemodis-vj114img-nrt-2)
 and [sample data notes](data/README.md).
 
+The v0.3 work also includes a bounded `VIIRS_NOAA20_SP` historical CSV around
+Lahaina for 8--12 August 2023. The saved subset contains 56 thermal-anomaly
+detections in three acquisition timestamps. It supports chronological replay;
+it is not labeled wildfire ground truth. Exact query parameters and the
+reproducible download command are documented in
+[evaluation and replay notes](docs/evaluation-and-replay.md).
+
 ## Project structure
 
 ```text
@@ -271,8 +320,8 @@ See [roadmap.md](roadmap.md) for planned versions and project milestones.
 
 ## Current limitations
 
-- The committed dataset contains only five example detections from one VIIRS
-  source and one acquisition date.
+- The datasets remain small: one five-row ingestion sample and one bounded
+  56-row historical replay subset from a single VIIRS source.
 - NRT detections are not ground truth and may include non-wildfire thermal
   anomalies.
 - The current model performs type conversion but does not yet validate
@@ -296,5 +345,11 @@ See [roadmap.md](roadmap.md) for planned versions and project milestones.
   not assign active/inactive status or prune old event history.
 - Centroid path and radius change describe changes in satellite observations;
   they are not validated measurements of physical fire spread or burned area.
-- Clustering, tracking, and event metrics are Python-library features and are
-  not yet connected to the command-line ingestion pipeline.
+- The main `python -m wildfirewatch` command still exposes only ingestion;
+  evaluation and replay currently use dedicated scripts.
+- Synthetic labels verify controlled behavior but are not validation against
+  confirmed wildfire perimeters.
+- The initial historical replay uses exploratory thresholds. Its third frame
+  contains two spatial clusters that the baseline associates with one event;
+  whether same-frame many-to-one association should be allowed remains an
+  explicit v0.3 evaluation question.
