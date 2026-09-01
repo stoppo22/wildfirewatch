@@ -109,8 +109,8 @@ def test_insert_detection_ignores_exact_duplicate():
         satellite="NOAA-20",
         day_night="D",
     )
-    insert_detection(connection, detection)
-    insert_detection(connection, detection)
+    first_inserted = insert_detection(connection, detection)
+    second_inserted = insert_detection(connection, detection)
 
     actual = connection.execute("""
         SELECT COUNT(*)
@@ -118,6 +118,8 @@ def test_insert_detection_ignores_exact_duplicate():
         """).fetchone()
     connection.close()
 
+    assert first_inserted is True
+    assert second_inserted is False
     assert actual == (1,)
 
 

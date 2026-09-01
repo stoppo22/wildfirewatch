@@ -33,9 +33,9 @@ def create_tables(connection: sqlite3.Connection) -> None:
 def insert_detection(
     connection: sqlite3.Connection,
     detection: Detection,
-) -> None:
+) -> bool:
 
-    connection.execute(
+    cursor = connection.execute(
         """
     INSERT OR IGNORE INTO detections (
         latitude,
@@ -58,3 +58,5 @@ def insert_detection(
             detection.day_night,
         ),
     )
+
+    return cursor.rowcount == 1
