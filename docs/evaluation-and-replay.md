@@ -139,3 +139,35 @@ The two JSON reports record the chosen method, parameters, frame summaries,
 event centroids, durations, and the thermal-anomaly/ground-truth limitation.
 The comparison is reproducible, but the three-frame subset is too small to
 claim real-world tracking accuracy.
+
+## Spatial reference coverage
+
+The spatial check uses one public Lahaina perimeter from an ArcGIS feature
+service published in the USGS ArcGIS organization. The selected feature is
+`OBJECTID=2`, reports source `2023 NIFS`, map method `Auto-generated`, and an
+area of approximately 2,123.74 acres. The service item does not expose an
+explicit license, description, or credits, so the GeoJSON remains local and
+is recreated rather than committed.
+
+Download the selected polygon, then run the evaluation:
+
+```bash
+python scripts/download_reference_perimeter.py
+
+python scripts/run_spatial_evaluation.py \
+  data/raw/viirs_noaa20_sp_lahaina_2023-08-08_2023-08-12.csv
+```
+
+The second command writes
+`evaluation/results/lahaina_spatial_coverage.json`.
+
+The measured coverage ratio is **0.678571**, or **67.86%**, across the 56
+FIRMS detections. A detection counts as covered when its coordinate is inside
+or exactly on the reference polygon according to the documented ray-casting
+implementation.
+
+This number is spatial coverage, not tracking accuracy, precision, or recall.
+The final/reference perimeter and satellite thermal-anomaly points do not
+represent identical phenomena or perfectly aligned observation times. The
+perimeter also cannot determine whether predicted event IDs are temporally
+correct.

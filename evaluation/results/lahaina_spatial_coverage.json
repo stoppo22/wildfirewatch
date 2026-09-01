@@ -1,0 +1,15 @@
+{
+  "kind": "historical_spatial_reference_evaluation",
+  "source_csv": "data/raw/viirs_noaa20_sp_lahaina_2023-08-08_2023-08-12.csv",
+  "reference_geojson": "data/reference/lahaina_fire_perimeter_usgs_object_2.geojson",
+  "reference": {
+    "service": "https://services.arcgis.com/v01gqwM5QqNysAAi/ArcGIS/rest/services/Lahaina_Fire_Perimeter/FeatureServer/6",
+    "object_id": 2,
+    "incident_name": "Lahaina",
+    "source": "2023 NIFS",
+    "map_method": "Auto-generated"
+  },
+  "detection_count": 56,
+  "coverage_ratio": 0.6785714285714286,
+  "limitations": "Coverage measures the fraction of FIRMS thermal-anomaly points inside or on one reference perimeter. It is not tracking accuracy, confirmed wildfire ground truth, or temporal validation."
+}

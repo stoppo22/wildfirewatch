@@ -36,3 +36,25 @@ Area API response used by the in-progress v0.3 historical replay.
 The file contains active-fire/thermal-anomaly detections, not confirmed
 wildfire labels or a reference fire perimeter. Its purpose is to exercise the
 chronological replay pipeline on a small reproducible historical subset.
+
+## Lahaina reference perimeter
+
+The v0.3 spatial evaluation downloads one public polygon from the ArcGIS
+feature service `Lahaina Fire Perimeter`, published in the USGS ArcGIS
+organization by an account ending in `@usgs.gov`:
+
+https://services.arcgis.com/v01gqwM5QqNysAAi/ArcGIS/rest/services/Lahaina_Fire_Perimeter/FeatureServer/6
+
+The selected feature has `OBJECTID=2`, incident name `Lahaina`, source
+`2023 NIFS`, map method `Auto-generated`, and an indicated area of about
+2,123.74 acres. The service item exposes no description, credits, or explicit
+license. For that reason the downloaded GeoJSON stays local and is ignored by
+Git. Recreate it with:
+
+```bash
+python scripts/download_reference_perimeter.py
+```
+
+The polygon is a spatial reference for an experimental coverage metric. It is
+not treated as perfect ground truth, and it cannot validate event identities
+or the temporal correctness of tracking by itself.

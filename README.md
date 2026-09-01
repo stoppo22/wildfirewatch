@@ -4,8 +4,9 @@ WildfireWatch is a learning-first Python project for turning raw NASA FIRMS
 active-fire detections into clean, tested candidate fire events.
 
 > **Status:** v0.2.0 is complete. v0.3.0 is in progress with controlled
-> evaluation metrics, threshold-sensitivity experiments, and an initial
-> chronological replay of a historical FIRMS dataset around Lahaina.
+> evaluation metrics, threshold-sensitivity experiments, baseline versus
+> one-to-one tracking, historical replay, and spatial reference coverage for
+> a bounded FIRMS dataset around Lahaina.
 
 FIRMS detections are satellite-observed thermal anomalies. They are not
 necessarily confirmed wildfires, and WildfireWatch is not an emergency,
@@ -112,6 +113,15 @@ saved historical FIRMS CSV
     -> immutable chronological frame snapshots
 ```
 
+The spatial reference evaluation path is:
+
+```text
+historical FIRMS detections + local reference Polygon
+    -> point-in-polygon checks
+    -> inside-or-boundary detection coverage ratio
+    -> measured JSON report with explicit limitations
+```
+
 See [evaluation and replay notes](docs/evaluation-and-replay.md) for the
 methodology, commands, measured results, and limitations.
 
@@ -203,6 +213,18 @@ python scripts/run_historical_replay.py \
   data/raw/viirs_noaa20_sp_lahaina_2023-08-08_2023-08-12.csv
 ```
 
+Download the local reference perimeter and regenerate spatial coverage:
+
+```bash
+python scripts/download_reference_perimeter.py
+python scripts/run_spatial_evaluation.py \
+  data/raw/viirs_noaa20_sp_lahaina_2023-08-08_2023-08-12.csv
+```
+
+The measured coverage is 67.86% across 56 detections. It is a spatial
+consistency measure against one reference perimeter, not an accuracy,
+precision, or recall claim.
+
 The historical downloader reads `FIRMS_MAP_KEY` from a local `.env` file that
 is ignored by Git. Copy `.env.example` to `.env`, replace the placeholder, and
 never commit or share the resulting file.
@@ -227,6 +249,8 @@ The tests currently document:
   nearest-event selection, and observation-free windows;
 - event duration, observation history, centroid path, radius change, and empty
   history behavior.
+- point-in-polygon behavior for internal, external, boundary, and invalid
+  polygons, plus historical detection coverage calculations.
 
 ## Format the code
 
@@ -281,6 +305,12 @@ detections in three acquisition timestamps. It supports chronological replay;
 it is not labeled wildfire ground truth. Exact query parameters and the
 reproducible download command are documented in
 [evaluation and replay notes](docs/evaluation-and-replay.md).
+
+The spatial evaluation downloads one public Lahaina reference polygon from a
+feature service published in the USGS ArcGIS organization. The downloaded
+GeoJSON is ignored by Git because the service item exposes no explicit
+license; source metadata and the reproducible command are recorded in
+[data notes](data/README.md).
 
 ## Project structure
 
@@ -349,7 +379,10 @@ See [roadmap.md](roadmap.md) for planned versions and project milestones.
   evaluation and replay currently use dedicated scripts.
 - Synthetic labels verify controlled behavior but are not validation against
   confirmed wildfire perimeters.
-- The initial historical replay uses exploratory thresholds. Its third frame
-  contains two spatial clusters that the baseline associates with one event;
-  whether same-frame many-to-one association should be allowed remains an
-  explicit v0.3 evaluation question.
+- The historical replay uses exploratory thresholds. In its third frame the
+  baseline associates two spatial clusters with one event, while the
+  one-to-one alternative produces two events; neither result alone proves the
+  number of real wildfires.
+- The measured 67.86% reference-perimeter coverage is not tracking accuracy.
+  One perimeter cannot validate predicted event identities or temporal
+  associations, and boundary/reference uncertainty is not modeled.
