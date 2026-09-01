@@ -48,7 +48,7 @@ def main() -> None:
     parser.add_argument(
         "--output",
         type=Path,
-        default=Path("evaluation/results/lahaina_replay.json"),
+        default=Path("evaluation/results/lahaina_replay_baseline.json"),
     )
     args = parser.parse_args()
 
@@ -65,7 +65,7 @@ def main() -> None:
     )
     report = {
         "kind": "historical_active_fire_replay",
-        "source_csv": str(csv_path.relative_to(PROJECT_ROOT)),
+        "source_csv": csv_path.relative_to(PROJECT_ROOT).as_posix(),
         "parameters": {
             "cluster_distance_km": args.cluster_distance_km,
             "event_distance_km": args.event_distance_km,

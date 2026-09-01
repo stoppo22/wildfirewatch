@@ -3,14 +3,41 @@
 WildfireWatch is a learning-first Python project for turning raw NASA FIRMS
 active-fire detections into clean, tested candidate fire events.
 
-> **Status:** v0.2.0 is complete. v0.3.0 is in progress with controlled
-> evaluation metrics, threshold-sensitivity experiments, baseline versus
-> one-to-one tracking, historical replay visualization, and spatial reference
-> coverage for a bounded FIRMS dataset around Lahaina.
+> **Status:** v0.3.0 is complete with controlled evaluation metrics,
+> threshold-sensitivity experiments, baseline versus one-to-one tracking,
+> historical replay visualization, and spatial reference coverage for a
+> bounded FIRMS dataset around Lahaina.
 
 FIRMS detections are satellite-observed thermal anomalies. They are not
 necessarily confirmed wildfires, and WildfireWatch is not an emergency,
 safety, or authoritative fire-detection system.
+
+## At a glance
+
+```mermaid
+flowchart LR
+    A[NASA FIRMS<br/>thermal anomalies] --> B[Normalize<br/>Detection objects]
+    B --> C[Spatial<br/>clustering]
+    C --> D[Track candidate<br/>events over time]
+    D --> E[Historical<br/>replay]
+    D --> F[Evaluation<br/>metrics]
+    G[Reference<br/>perimeter] --> F
+```
+
+![Three-panel Lahaina historical replay](evaluation/results/lahaina_replay_one_to_one.png)
+
+Red points are cumulative FIRMS thermal-anomaly detections, blue crosses are
+candidate-event centroids, and the green area is a reference perimeter. Each
+panel uses only information available by its timestamp.
+
+| Reproducible evidence | Measured result |
+| --- | --- |
+| Historical subset | 56 detections across 3 acquisition timestamps |
+| Final replay comparison | baseline: 1 event; one-to-one: 2 events |
+| Reference-perimeter coverage | 67.86% of detections inside or on the polygon |
+
+These results describe this bounded experiment. They are not wildfire
+confirmation, emergency guidance, or globally validated tracking accuracy.
 
 ## v0.0.0 scope
 
@@ -93,7 +120,7 @@ Detection objects
     -> centroid-path and radius-change metrics
 ```
 
-The in-progress v0.3 evaluation path is:
+The v0.3 evaluation path is:
 
 ```text
 controlled labels + clusters
@@ -233,8 +260,6 @@ python scripts/plot_historical_replay.py \
   data/raw/viirs_noaa20_sp_lahaina_2023-08-08_2023-08-12.csv
 ```
 
-![Three-panel Lahaina historical replay](evaluation/results/lahaina_replay_one_to_one.png)
-
 The panels contain 49, 53, and 56 cumulative detections. Each panel uses only
 detections acquired by its timestamp, so the image demonstrates the replay's
 no-future-data behavior as well as the final two-event one-to-one result.
@@ -331,19 +356,26 @@ license; source metadata and the reproducible command are recorded in
 ```text
 wildfirewatch/
 ├── wildfirewatch/
-│   ├── __init__.py
-│   ├── __main__.py
 │   ├── clustering.py
+│   ├── evaluation.py
+│   ├── evaluation_scenarios.py
 │   ├── event_metrics.py
+│   ├── experiments.py
 │   ├── geo.py
 │   ├── ingestion.py
 │   ├── models.py
+│   ├── replay.py
+│   ├── spatial_evaluation.py
 │   ├── summary.py
 │   └── tracking.py
 ├── tests/
+├── scripts/
+├── evaluation/results/
 ├── data/
 │   ├── README.md
-│   └── raw/
+│   ├── raw/
+│   └── reference/  (downloaded locally, ignored by Git)
+├── docs/
 ├── README.md
 ├── roadmap.md
 └── pyproject.toml

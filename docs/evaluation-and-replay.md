@@ -1,6 +1,6 @@
 # Evaluation and historical replay
 
-This document describes the in-progress WildfireWatch v0.3 evaluation work.
+This document describes the completed WildfireWatch v0.3 evaluation work.
 The results below are intentionally separated into controlled synthetic
 evaluation and historical active-fire replay. Neither is presented as
 validated emergency or wildfire-risk performance.

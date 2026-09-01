@@ -22,7 +22,7 @@ https://www.earthdata.nasa.gov/data/catalog/lancemodis-vj114img-nrt-2
 ## Historical replay data
 
 `raw/viirs_noaa20_sp_lahaina_2023-08-08_2023-08-12.csv` is a bounded FIRMS
-Area API response used by the in-progress v0.3 historical replay.
+Area API response used by the v0.3 historical replay.
 
 - Source: `VIIRS_NOAA20_SP` (NOAA-20 Standard Processing)
 - Query date: `2023-08-08`

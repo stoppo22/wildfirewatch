@@ -9,7 +9,7 @@
       "false_merges": 0,
       "detection_reduction_ratio": 0.0,
       "event_continuity_ratio": 0.0,
-      "runtime_seconds": 0.00010720000136643648
+      "runtime_seconds": 0.0001145999995060265
     },
     {
       "max_distance_km": 10.0,
@@ -18,7 +18,7 @@
       "false_merges": 0,
       "detection_reduction_ratio": 0.5,
       "event_continuity_ratio": 1.0,
-      "runtime_seconds": 5.810000584460795e-05
+      "runtime_seconds": 5.8999983593821526e-05
     },
     {
       "max_distance_km": 20.0,
@@ -27,7 +27,7 @@
       "false_merges": 1,
       "detection_reduction_ratio": 0.75,
       "event_continuity_ratio": 1.0,
-      "runtime_seconds": 4.400001489557326e-05
+      "runtime_seconds": 4.469999112188816e-05
     }
   ],
   "time_gap_threshold_results": [
@@ -38,7 +38,7 @@
       "false_merges": 0,
       "detection_reduction_ratio": 0.0,
       "event_continuity_ratio": 0.0,
-      "runtime_seconds": 4.630000330507755e-05
+      "runtime_seconds": 4.839999019168317e-05
     },
     {
       "max_distance_km": 1.0,
@@ -47,7 +47,7 @@
       "false_merges": 0,
       "detection_reduction_ratio": 0.5,
       "event_continuity_ratio": 1.0,
-      "runtime_seconds": 4.119999357499182e-05
+      "runtime_seconds": 4.239997360855341e-05
     },
     {
       "max_distance_km": 1.0,
@@ -56,7 +56,7 @@
       "false_merges": 1,
       "detection_reduction_ratio": 0.75,
       "event_continuity_ratio": 1.0,
-      "runtime_seconds": 4.020001506432891e-05
+      "runtime_seconds": 3.9000005926936865e-05
     }
   ]
 }

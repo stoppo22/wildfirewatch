@@ -89,6 +89,8 @@ Done when:
 - the user can explain why two clusters are considered the same event.
 
 ## v0.3 — Evaluation, algorithm comparison and historical replay
+Status: completed as v0.3.0.
+
 This is the first major CV-worthy checkpoint.
 
 Build:
