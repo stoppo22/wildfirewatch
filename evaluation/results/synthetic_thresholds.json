@@ -1,0 +1,62 @@
+{
+  "kind": "controlled_synthetic_evaluation",
+  "limitations": "Synthetic labels test expected algorithm behavior; they are not validation against confirmed historical wildfires.",
+  "distance_threshold_results": [
+    {
+      "max_distance_km": 5.0,
+      "max_time_gap_hours": 3.0,
+      "false_splits": 2,
+      "false_merges": 0,
+      "detection_reduction_ratio": 0.0,
+      "event_continuity_ratio": 0.0,
+      "runtime_seconds": 0.00010720000136643648
+    },
+    {
+      "max_distance_km": 10.0,
+      "max_time_gap_hours": 3.0,
+      "false_splits": 0,
+      "false_merges": 0,
+      "detection_reduction_ratio": 0.5,
+      "event_continuity_ratio": 1.0,
+      "runtime_seconds": 5.810000584460795e-05
+    },
+    {
+      "max_distance_km": 20.0,
+      "max_time_gap_hours": 3.0,
+      "false_splits": 0,
+      "false_merges": 1,
+      "detection_reduction_ratio": 0.75,
+      "event_continuity_ratio": 1.0,
+      "runtime_seconds": 4.400001489557326e-05
+    }
+  ],
+  "time_gap_threshold_results": [
+    {
+      "max_distance_km": 1.0,
+      "max_time_gap_hours": 1.0,
+      "false_splits": 2,
+      "false_merges": 0,
+      "detection_reduction_ratio": 0.0,
+      "event_continuity_ratio": 0.0,
+      "runtime_seconds": 4.630000330507755e-05
+    },
+    {
+      "max_distance_km": 1.0,
+      "max_time_gap_hours": 3.0,
+      "false_splits": 0,
+      "false_merges": 0,
+      "detection_reduction_ratio": 0.5,
+      "event_continuity_ratio": 1.0,
+      "runtime_seconds": 4.119999357499182e-05
+    },
+    {
+      "max_distance_km": 1.0,
+      "max_time_gap_hours": 10.0,
+      "false_splits": 0,
+      "false_merges": 1,
+      "detection_reduction_ratio": 0.75,
+      "event_continuity_ratio": 1.0,
+      "runtime_seconds": 4.020001506432891e-05
+    }
+  ]
+}
