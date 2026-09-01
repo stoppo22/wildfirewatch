@@ -64,3 +64,31 @@ def test_replay_frames_do_not_gain_future_detections():
     assert frames[1].detection_count == 1
     assert frames[1].cluster_count == 1
     assert frames[1].events[0].detection_count == 3
+
+
+def test_replay_compares_baseline_and_one_to_one_tracking():
+    first_time = datetime(2023, 8, 9, 12, 0, tzinfo=timezone.utc)
+    second_time = datetime(2023, 8, 9, 13, 0, tzinfo=timezone.utc)
+    detections = [
+        make_detection(-156.670, first_time),
+        make_detection(-156.660, second_time),
+        make_detection(-156.650, second_time),
+    ]
+    parameters = {
+        "detections": detections,
+        "cluster_distance_km": 0.5,
+        "event_distance_km": 5.0,
+        "max_time_gap": timedelta(hours=2),
+    }
+
+    baseline_frames = replay_detections(
+        **parameters,
+        tracking_method="baseline",
+    )
+    one_to_one_frames = replay_detections(
+        **parameters,
+        tracking_method="one_to_one",
+    )
+
+    assert len(baseline_frames[-1].events) == 1
+    assert len(one_to_one_frames[-1].events) == 2

@@ -92,11 +92,18 @@ contains 56 detections across three acquisition timestamps.
 
 ## Chronological replay
 
-Run:
+Run the baseline and one-to-one methods with the same data and parameters:
 
 ```bash
 python scripts/run_historical_replay.py \
-  data/raw/viirs_noaa20_sp_lahaina_2023-08-08_2023-08-12.csv
+  data/raw/viirs_noaa20_sp_lahaina_2023-08-08_2023-08-12.csv \
+  --tracking-method baseline \
+  --output evaluation/results/lahaina_replay_baseline.json
+
+python scripts/run_historical_replay.py \
+  data/raw/viirs_noaa20_sp_lahaina_2023-08-08_2023-08-12.csv \
+  --tracking-method one_to_one \
+  --output evaluation/results/lahaina_replay_one_to_one.json
 ```
 
 The initial exploratory parameters are:
@@ -108,20 +115,27 @@ The initial exploratory parameters are:
 The 13-hour gap accommodates the observed NOAA-20 acquisition gaps of about
 11 hours and 12.5 hours. It is not a validated universal threshold.
 
-| Frame (UTC) | New detections | Clusters | Candidate events |
-| --- | ---: | ---: | ---: |
-| 2023-08-09 12:15 | 49 | 1 | 1 |
-| 2023-08-09 23:26 | 4 | 1 | 1 |
-| 2023-08-10 11:56 | 3 | 2 | 1 |
+| Frame (UTC) | New detections | Clusters | Baseline events | One-to-one events |
+| --- | ---: | ---: | ---: | ---: |
+| 2023-08-09 12:15 | 49 | 1 | 1 | 1 |
+| 2023-08-09 23:26 | 4 | 1 | 1 | 1 |
+| 2023-08-10 11:56 | 3 | 2 | 1 | 2 |
 
 Each frame contains only information available up to its timestamp. A test
 verifies that an earlier frame does not gain detections from a later frame.
 
-The third frame exposes an open design question: the baseline currently lets
-two clusters from the same timestamp update one event. This may represent
-multiple active areas of one event, or an incorrect many-to-one association.
-The behavior must be evaluated before changing it.
+The third frame exposes the baseline's many-to-one behavior: two clusters from
+the same timestamp both update event 1. Its result therefore remains one
+candidate event containing all 56 detections.
 
-The JSON output is saved to `evaluation/results/lahaina_replay.json` and
-records parameters, frame summaries, event centroids, durations, and the
-thermal-anomaly/ground-truth limitation.
+The alternative greedily sorts all valid event-cluster pairs by distance and
+accepts a pair only when neither side has already been used in that frame.
+The nearest third-frame cluster updates event 1; the unmatched cluster creates
+event 2. The result is two candidate events containing 55 and 1 detections.
+This removes order-dependent duplicate updates to one event during a frame.
+It does not prove that the second candidate is a separate real wildfire.
+
+The two JSON reports record the chosen method, parameters, frame summaries,
+event centroids, durations, and the thermal-anomaly/ground-truth limitation.
+The comparison is reproducible, but the three-frame subset is too small to
+claim real-world tracking accuracy.

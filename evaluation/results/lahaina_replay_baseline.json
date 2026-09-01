@@ -1,0 +1,64 @@
+{
+  "kind": "historical_active_fire_replay",
+  "source_csv": "data\\raw\\viirs_noaa20_sp_lahaina_2023-08-08_2023-08-12.csv",
+  "parameters": {
+    "cluster_distance_km": 2.0,
+    "event_distance_km": 10.0,
+    "max_time_gap_hours": 13.0,
+    "tracking_method": "baseline"
+  },
+  "limitations": "FIRMS active-fire detections are thermal anomalies, not confirmed wildfire ground truth. Replay parameters are exploratory.",
+  "frames": [
+    {
+      "timestamp_utc": "2023-08-09T12:15:00+00:00",
+      "new_detection_count": 49,
+      "cluster_count": 1,
+      "event_count": 1,
+      "events": [
+        {
+          "event_id": 1,
+          "first_seen_utc": "2023-08-09T12:15:00+00:00",
+          "last_seen_utc": "2023-08-09T12:15:00+00:00",
+          "detection_count": 49,
+          "centroid_latitude": 20.87876244897959,
+          "centroid_longitude": -156.67416285714285,
+          "duration_hours": 0.0
+        }
+      ]
+    },
+    {
+      "timestamp_utc": "2023-08-09T23:26:00+00:00",
+      "new_detection_count": 4,
+      "cluster_count": 1,
+      "event_count": 1,
+      "events": [
+        {
+          "event_id": 1,
+          "first_seen_utc": "2023-08-09T12:15:00+00:00",
+          "last_seen_utc": "2023-08-09T23:26:00+00:00",
+          "detection_count": 53,
+          "centroid_latitude": 20.8794079245283,
+          "centroid_longitude": -156.67455660377357,
+          "duration_hours": 11.183333333333334
+        }
+      ]
+    },
+    {
+      "timestamp_utc": "2023-08-10T11:56:00+00:00",
+      "new_detection_count": 3,
+      "cluster_count": 2,
+      "event_count": 1,
+      "events": [
+        {
+          "event_id": 1,
+          "first_seen_utc": "2023-08-09T12:15:00+00:00",
+          "last_seen_utc": "2023-08-10T11:56:00+00:00",
+          "detection_count": 56,
+          "centroid_latitude": 20.878955892857142,
+          "centroid_longitude": -156.67425499999996,
+          "duration_hours": 23.683333333333334
+        }
+      ]
+    }
+  ]
+}

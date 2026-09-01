@@ -41,6 +41,11 @@ def main() -> None:
     parser.add_argument("--event-distance-km", type=float, default=10.0)
     parser.add_argument("--max-time-gap-hours", type=float, default=13.0)
     parser.add_argument(
+        "--tracking-method",
+        choices=["baseline", "one_to_one"],
+        default="baseline",
+    )
+    parser.add_argument(
         "--output",
         type=Path,
         default=Path("evaluation/results/lahaina_replay.json"),
@@ -56,6 +61,7 @@ def main() -> None:
         cluster_distance_km=args.cluster_distance_km,
         event_distance_km=args.event_distance_km,
         max_time_gap=timedelta(hours=args.max_time_gap_hours),
+        tracking_method=args.tracking_method,
     )
     report = {
         "kind": "historical_active_fire_replay",
@@ -64,6 +70,7 @@ def main() -> None:
             "cluster_distance_km": args.cluster_distance_km,
             "event_distance_km": args.event_distance_km,
             "max_time_gap_hours": args.max_time_gap_hours,
+            "tracking_method": args.tracking_method,
         },
         "limitations": (
             "FIRMS active-fire detections are thermal anomalies, not confirmed "

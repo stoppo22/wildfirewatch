@@ -3,7 +3,12 @@
 from datetime import datetime, timedelta, timezone
 
 from wildfirewatch.models import Detection, EventObservation, FireEvent
-from wildfirewatch.tracking import update_events
+from wildfirewatch.summary import summarize_cluster
+from wildfirewatch.tracking import (
+    match_clusters_one_to_one,
+    update_events,
+    update_events_one_to_one,
+)
 
 
 def make_detection(
@@ -316,3 +321,57 @@ def test_update_events_keeps_existing_event_when_no_clusters_arrive():
     expected = [event]
 
     assert actual == expected
+
+
+def test_match_clusters_one_to_one_assigns_only_nearest_cluster_to_event():
+    first_time = datetime(2026, 8, 29, 12, 0, tzinfo=timezone.utc)
+    second_time = datetime(2026, 8, 29, 14, 0, tzinfo=timezone.utc)
+    event = FireEvent(
+        event_id=7,
+        first_seen_utc=first_time,
+        last_seen_utc=first_time,
+        centroid_latitude=0.0,
+        centroid_longitude=0.0,
+        detection_count=1,
+    )
+    farther_summary = summarize_cluster([make_detection(0.0, 0.02, second_time)])
+    nearer_summary = summarize_cluster([make_detection(0.0, 0.01, second_time)])
+
+    actual = match_clusters_one_to_one(
+        events=[event],
+        summaries=[farther_summary, nearer_summary],
+        max_distance_km=10.0,
+        max_time_gap=timedelta(hours=3),
+    )
+
+    assert actual == {1: 0}
+
+
+def test_update_events_one_to_one_creates_event_for_unmatched_cluster():
+    first_time = datetime(2026, 8, 29, 12, 0, tzinfo=timezone.utc)
+    second_time = datetime(2026, 8, 29, 14, 0, tzinfo=timezone.utc)
+    event = FireEvent(
+        event_id=7,
+        first_seen_utc=first_time,
+        last_seen_utc=first_time,
+        centroid_latitude=0.0,
+        centroid_longitude=0.0,
+        detection_count=1,
+    )
+    farther_cluster = [make_detection(0.0, 0.02, second_time)]
+    nearer_cluster = [make_detection(0.0, 0.01, second_time)]
+
+    actual = update_events_one_to_one(
+        events=[event],
+        clusters=[farther_cluster, nearer_cluster],
+        max_distance_km=10.0,
+        max_time_gap=timedelta(hours=3),
+    )
+
+    assert len(actual) == 2
+    assert actual[0].event_id == 7
+    assert actual[0].detection_count == 2
+    assert actual[0].observations[0].centroid_longitude == 0.01
+    assert actual[1].event_id == 8
+    assert actual[1].detection_count == 1
+    assert actual[1].centroid_longitude == 0.02

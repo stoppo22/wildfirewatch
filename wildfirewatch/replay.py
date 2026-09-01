@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 
 from wildfirewatch.clustering import cluster_detections
 from wildfirewatch.models import Detection, FireEvent
-from wildfirewatch.tracking import update_events
+from wildfirewatch.tracking import update_events, update_events_one_to_one
 
 
 @dataclass(frozen=True)
@@ -38,7 +38,15 @@ def replay_detections(
     cluster_distance_km: float,
     event_distance_km: float,
     max_time_gap: timedelta,
+    tracking_method: str = "baseline",
 ) -> list[ReplayFrame]:
+    if tracking_method == "baseline":
+        update_function = update_events
+    elif tracking_method == "one_to_one":
+        update_function = update_events_one_to_one
+    else:
+        raise ValueError(f"Unknown tracking method: {tracking_method}")
+
     events = []
     replay_frames = []
 
@@ -47,7 +55,7 @@ def replay_detections(
             frame_detections,
             max_distance_km=cluster_distance_km,
         )
-        events = update_events(
+        events = update_function(
             events=events,
             clusters=clusters,
             max_distance_km=event_distance_km,
