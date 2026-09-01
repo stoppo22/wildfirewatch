@@ -5,8 +5,8 @@ active-fire detections into clean, tested candidate fire events.
 
 > **Status:** v0.2.0 is complete. v0.3.0 is in progress with controlled
 > evaluation metrics, threshold-sensitivity experiments, baseline versus
-> one-to-one tracking, historical replay, and spatial reference coverage for
-> a bounded FIRMS dataset around Lahaina.
+> one-to-one tracking, historical replay visualization, and spatial reference
+> coverage for a bounded FIRMS dataset around Lahaina.
 
 FIRMS detections are satellite-observed thermal anomalies. They are not
 necessarily confirmed wildfires, and WildfireWatch is not an emergency,
@@ -158,8 +158,9 @@ only fields that have a concrete purpose in v0.0.0.
 - Git
 
 The application uses `python-dotenv` to load the private FIRMS MAP_KEY from a
-local `.env` file. `pytest` and Black are optional development dependencies
-used for tests and code formatting.
+local `.env` file and Matplotlib to generate the static replay visualization.
+`pytest` and Black are optional development dependencies used for tests and
+code formatting.
 
 ## Setup
 
@@ -224,6 +225,19 @@ python scripts/run_spatial_evaluation.py \
 The measured coverage is 67.86% across 56 detections. It is a spatial
 consistency measure against one reference perimeter, not an accuracy,
 precision, or recall claim.
+
+Generate the static one-to-one replay visualization:
+
+```bash
+python scripts/plot_historical_replay.py \
+  data/raw/viirs_noaa20_sp_lahaina_2023-08-08_2023-08-12.csv
+```
+
+![Three-panel Lahaina historical replay](evaluation/results/lahaina_replay_one_to_one.png)
+
+The panels contain 49, 53, and 56 cumulative detections. Each panel uses only
+detections acquired by its timestamp, so the image demonstrates the replay's
+no-future-data behavior as well as the final two-event one-to-one result.
 
 The historical downloader reads `FIRMS_MAP_KEY` from a local `.env` file that
 is ignored by Git. Copy `.env.example` to `.env`, replace the placeholder, and
@@ -386,3 +400,5 @@ See [roadmap.md](roadmap.md) for planned versions and project milestones.
 - The measured 67.86% reference-perimeter coverage is not tracking accuracy.
   One perimeter cannot validate predicted event identities or temporal
   associations, and boundary/reference uncertainty is not modeled.
+- The replay visualization is a static evaluation artifact, not a live map or
+  emergency-monitoring interface.

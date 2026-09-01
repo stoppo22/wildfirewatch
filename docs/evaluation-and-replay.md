@@ -171,3 +171,24 @@ The final/reference perimeter and satellite thermal-anomaly points do not
 represent identical phenomena or perfectly aligned observation times. The
 perimeter also cannot determine whether predicted event IDs are temporally
 correct.
+
+## Static replay visualization
+
+Generate the three-panel one-to-one replay figure with:
+
+```bash
+python scripts/plot_historical_replay.py \
+  data/raw/viirs_noaa20_sp_lahaina_2023-08-08_2023-08-12.csv
+```
+
+The command writes
+`evaluation/results/lahaina_replay_one_to_one.png`.
+
+![Three-panel Lahaina historical replay](../evaluation/results/lahaina_replay_one_to_one.png)
+
+Each panel overlays the reference perimeter, all FIRMS detections available by
+that timestamp, and the candidate-event centroids in the immutable replay
+snapshot. The cumulative counts are 49, 53, and 56; the first two panels do
+not include detections from later acquisitions. The final panel shows E1 and
+E2 from the one-to-one method. These are candidate event IDs, not confirmed
+separate wildfires.
