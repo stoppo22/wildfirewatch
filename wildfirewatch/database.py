@@ -16,7 +16,16 @@ def create_tables(connection: sqlite3.Connection) -> None:
             frp REAL NOT NULL,
             confidence TEXT NOT NULL,
             satellite TEXT NOT NULL,
-            day_night TEXT NOT NULL
+            day_night TEXT NOT NULL,
+            UNIQUE (
+                latitude,
+                longitude,
+                acquired_at_utc,
+                frp,
+                confidence,
+                satellite,
+                day_night
+            )
         );
         """)
 
@@ -28,7 +37,7 @@ def insert_detection(
 
     connection.execute(
         """
-    INSERT INTO detections (
+    INSERT OR IGNORE INTO detections (
         latitude,
         longitude,
         acquired_at_utc,

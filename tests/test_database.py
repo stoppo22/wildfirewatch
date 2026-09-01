@@ -95,3 +95,61 @@ def test_detection_persists_after_reopening_database(tmp_path):
     reopened_connection.close()
 
     assert actual == (1,)
+
+
+def test_insert_detection_ignores_exact_duplicate():
+    connection = sqlite3.connect(":memory:")
+    create_tables(connection)
+    detection = Detection(
+        latitude=20.878,
+        longitude=-156.674,
+        acquired_at_utc=datetime(2023, 8, 9, 12, 15, tzinfo=timezone.utc),
+        frp=42.5,
+        confidence="nominal",
+        satellite="NOAA-20",
+        day_night="D",
+    )
+    insert_detection(connection, detection)
+    insert_detection(connection, detection)
+
+    actual = connection.execute("""
+        SELECT COUNT(*)
+        FROM detections;
+        """).fetchone()
+    connection.close()
+
+    assert actual == (1,)
+
+
+def test_insert_detection_keeps_different_timestamp():
+    connection = sqlite3.connect(":memory:")
+    create_tables(connection)
+    first_detection = Detection(
+        latitude=20.878,
+        longitude=-156.674,
+        acquired_at_utc=datetime(2023, 8, 9, 12, 15, tzinfo=timezone.utc),
+        frp=42.5,
+        confidence="nominal",
+        satellite="NOAA-20",
+        day_night="D",
+    )
+    second_detection = Detection(
+        latitude=20.878,
+        longitude=-156.674,
+        acquired_at_utc=datetime(2023, 8, 9, 23, 26, tzinfo=timezone.utc),
+        frp=42.5,
+        confidence="nominal",
+        satellite="NOAA-20",
+        day_night="D",
+    )
+    insert_detection(connection, first_detection)
+    insert_detection(connection, second_detection)
+
+    actual = connection.execute("""
+        SELECT COUNT(*)
+        FROM detections;
+        """).fetchone()
+
+    connection.close()
+
+    assert actual == (2,)
