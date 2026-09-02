@@ -9,6 +9,7 @@ from wildfirewatch.database import (
     insert_detection,
     insert_detections,
     upsert_fire_event,
+    load_fire_events,
 )
 
 
@@ -401,3 +402,41 @@ def test_upsert_fire_event_saves_event_observations():
     ]
 
     assert actual == expected
+
+
+def test_load_fire_events_restores_event_after_reopening_database(tmp_path):
+    database_path = tmp_path / "wildfirewatch.db"
+    connection = sqlite3.connect(database_path)
+
+    create_tables(connection)
+
+    observation = EventObservation(
+        first_seen_utc=datetime(2026, 9, 2, 18, 30, tzinfo=timezone.utc),
+        last_seen_utc=datetime(2026, 9, 2, 19, 30, tzinfo=timezone.utc),
+        centroid_latitude=22.878,
+        centroid_longitude=-158.674,
+        max_radius_km=10,
+        detection_count=4,
+        total_frp=2,
+    )
+
+    event = FireEvent(
+        event_id=7,
+        first_seen_utc=datetime(2026, 9, 2, 18, 30, tzinfo=timezone.utc),
+        last_seen_utc=datetime(2026, 9, 2, 19, 30, tzinfo=timezone.utc),
+        centroid_latitude=22.878,
+        centroid_longitude=-158.674,
+        detection_count=4,
+        observations=[observation],
+    )
+
+    upsert_fire_event(connection, event)
+
+    connection.commit()
+    connection.close()
+
+    reopened_connection = sqlite3.connect(database_path)
+    actual = load_fire_events(reopened_connection)
+    reopened_connection.close()
+
+    assert actual == [event]

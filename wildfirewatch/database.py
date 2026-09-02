@@ -1,9 +1,9 @@
 """SQLite persistence for WildfireWatch."""
 
 import sqlite3
+from datetime import datetime
 
-
-from wildfirewatch.models import Detection, FireEvent
+from wildfirewatch.models import Detection, FireEvent, EventObservation
 
 
 def create_tables(connection: sqlite3.Connection) -> None:
@@ -175,3 +175,69 @@ def upsert_fire_event(
                 observation.total_frp,
             ),
         )
+
+
+def load_fire_events(
+    connection: sqlite3.Connection,
+) -> list[FireEvent]:
+
+    rows = connection.execute("""
+        SELECT
+            event_id,
+            first_seen_utc,
+            last_seen_utc,
+            centroid_latitude,
+            centroid_longitude,
+            detection_count
+        FROM fire_events
+        ORDER BY event_id;
+  """).fetchall()
+
+    events = []
+
+    for row in rows:
+        new_rows = connection.execute(
+            """
+            SELECT
+                first_seen_utc,
+                last_seen_utc,
+                centroid_latitude,
+                centroid_longitude,
+                max_radius_km,
+                detection_count,
+                total_frp
+            FROM event_observations
+            WHERE event_id = ?
+            ORDER BY observation_index;
+
+        """,
+            (row[0],),
+        ).fetchall()
+
+        observations = []
+        for new_row in new_rows:
+            observations.append(
+                EventObservation(
+                    first_seen_utc=datetime.fromisoformat(new_row[0]),
+                    last_seen_utc=datetime.fromisoformat(new_row[1]),
+                    centroid_latitude=new_row[2],
+                    centroid_longitude=new_row[3],
+                    max_radius_km=new_row[4],
+                    detection_count=new_row[5],
+                    total_frp=new_row[6],
+                )
+            )
+
+        events.append(
+            FireEvent(
+                event_id=row[0],
+                first_seen_utc=datetime.fromisoformat(row[1]),
+                last_seen_utc=datetime.fromisoformat(row[2]),
+                centroid_latitude=row[3],
+                centroid_longitude=row[4],
+                detection_count=row[5],
+                observations=observations,
+            )
+        )
+
+    return events
