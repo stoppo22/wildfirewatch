@@ -3,7 +3,7 @@
 import sqlite3
 
 
-from wildfirewatch.models import Detection
+from wildfirewatch.models import Detection, FireEvent
 
 
 def create_tables(connection: sqlite3.Connection) -> None:
@@ -26,6 +26,17 @@ def create_tables(connection: sqlite3.Connection) -> None:
                 satellite,
                 day_night
             )
+        );
+        """)
+
+    connection.execute("""
+        CREATE TABLE IF NOT EXISTS fire_events (
+            event_id INTEGER PRIMARY KEY,
+            first_seen_utc TEXT NOT NULL,
+            last_seen_utc TEXT NOT NULL,
+            centroid_latitude REAL NOT NULL,
+            centroid_longitude REAL NOT NULL,
+            detection_count INTEGER NOT NULL
         );
         """)
 
@@ -73,3 +84,36 @@ def insert_detections(
             counter += 1
 
     return counter
+
+
+def upsert_fire_event(
+    connection: sqlite3.Connection,
+    event: FireEvent,
+) -> None:
+    connection.execute(
+        """
+        INSERT INTO fire_events (
+            event_id,
+            first_seen_utc,
+            last_seen_utc,
+            centroid_latitude,
+            centroid_longitude,
+            detection_count
+        )
+        VALUES (?, ?, ?, ?, ?, ?)
+        ON CONFLICT(event_id) DO UPDATE SET
+            first_seen_utc = excluded.first_seen_utc,
+            last_seen_utc = excluded.last_seen_utc,
+            centroid_latitude = excluded.centroid_latitude,
+            centroid_longitude = excluded.centroid_longitude,
+            detection_count = excluded.detection_count;
+        """,
+        (
+            event.event_id,
+            event.first_seen_utc.isoformat(),
+            event.last_seen_utc.isoformat(),
+            event.centroid_latitude,
+            event.centroid_longitude,
+            event.detection_count,
+        ),
+    )

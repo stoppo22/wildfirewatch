@@ -3,8 +3,13 @@
 import sqlite3
 from datetime import datetime, timezone
 
-from wildfirewatch.models import Detection
-from wildfirewatch.database import create_tables, insert_detection, insert_detections
+from wildfirewatch.models import Detection, FireEvent
+from wildfirewatch.database import (
+    create_tables,
+    insert_detection,
+    insert_detections,
+    upsert_fire_event,
+)
 
 
 def test_create_tables_creates_detections_table():
@@ -204,3 +209,113 @@ def test_insert_detections_counts_only_new_detections():
 
     assert inserted_count == 2
     assert actual == (3,)
+
+
+def test_create_tables_creates_fire_events_table():
+    connection = sqlite3.connect(":memory:")
+
+    create_tables(connection)
+
+    actual = connection.execute("""
+      SELECT name
+      FROM sqlite_master
+      WHERE type =  'table'
+      AND name = 'fire_events'
+      """).fetchone()
+
+    connection.close()
+
+    assert actual == ("fire_events",)
+
+
+def test_upsert_fire_event_saves_fire_event_values():
+    connection = sqlite3.connect(":memory:")
+    create_tables(connection)
+
+    fire_event = FireEvent(
+        event_id=7,
+        first_seen_utc=datetime(2026, 9, 2, 18, 30, tzinfo=timezone.utc),
+        last_seen_utc=datetime(2026, 9, 2, 19, 30, tzinfo=timezone.utc),
+        centroid_latitude=20.878,
+        centroid_longitude=-156.674,
+        detection_count=4,
+    )
+
+    upsert_fire_event(connection, fire_event)
+
+    actual = connection.execute("""
+        SELECT
+            event_id,
+            first_seen_utc,
+            last_seen_utc,
+            centroid_latitude,
+            centroid_longitude,
+            detection_count
+        FROM fire_events;
+        """).fetchone()
+
+    connection.close()
+
+    expected = (
+        7,
+        "2026-09-02T18:30:00+00:00",
+        "2026-09-02T19:30:00+00:00",
+        20.878,
+        -156.674,
+        4,
+    )
+
+    assert actual == expected
+
+
+def test_upsert_fire_event_updates_existing_event():
+    connection = sqlite3.connect(":memory:")
+    create_tables(connection)
+
+    original_event = FireEvent(
+        event_id=7,
+        first_seen_utc=datetime(2026, 9, 2, 18, 30, tzinfo=timezone.utc),
+        last_seen_utc=datetime(2026, 9, 2, 19, 30, tzinfo=timezone.utc),
+        centroid_latitude=20.878,
+        centroid_longitude=-156.674,
+        detection_count=4,
+    )
+
+    upsert_fire_event(connection, original_event)
+
+    updated_event = FireEvent(
+        event_id=7,
+        first_seen_utc=datetime(2026, 9, 2, 18, 30, tzinfo=timezone.utc),
+        last_seen_utc=datetime(2026, 9, 2, 21, 30, tzinfo=timezone.utc),
+        centroid_latitude=22.878,
+        centroid_longitude=-158.674,
+        detection_count=6,
+    )
+
+    upsert_fire_event(connection, updated_event)
+
+    row_count = connection.execute("""
+        SELECT COUNT(*)
+        FROM fire_events;
+    """).fetchone()
+
+    actual = connection.execute("""
+        SELECT
+            last_seen_utc,
+            centroid_latitude,
+            centroid_longitude,
+            detection_count
+        FROM fire_events;
+    """).fetchone()
+
+    connection.close()
+
+    expected = (
+        "2026-09-02T21:30:00+00:00",
+        22.878,
+        -158.674,
+        6,
+    )
+
+    assert row_count == (1,)
+    assert actual == expected
