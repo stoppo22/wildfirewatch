@@ -4,7 +4,7 @@ import sqlite3
 from datetime import datetime, timezone
 
 from wildfirewatch.models import Detection
-from wildfirewatch.database import create_tables, insert_detection
+from wildfirewatch.database import create_tables, insert_detection, insert_detections
 
 
 def test_create_tables_creates_detections_table():
@@ -155,3 +155,52 @@ def test_insert_detection_keeps_different_timestamp():
     connection.close()
 
     assert actual == (2,)
+
+
+def test_insert_detections_counts_only_new_detections():
+    connection = sqlite3.connect(":memory:")
+    create_tables(connection)
+
+    existing_detection = Detection(
+        latitude=20.878,
+        longitude=-156.674,
+        acquired_at_utc=datetime(2023, 8, 9, 12, 15, tzinfo=timezone.utc),
+        frp=42.5,
+        confidence="nominal",
+        satellite="NOAA-20",
+        day_night="D",
+    )
+
+    new_detection = Detection(
+        latitude=20.878,
+        longitude=-156.674,
+        acquired_at_utc=datetime(2023, 8, 9, 23, 26, tzinfo=timezone.utc),
+        frp=42.5,
+        confidence="nominal",
+        satellite="NOAA-20",
+        day_night="D",
+    )
+
+    second_new_detection = Detection(
+        latitude=20.878,
+        longitude=-156.674,
+        acquired_at_utc=datetime(2023, 8, 10, 23, 26, tzinfo=timezone.utc),
+        frp=42.5,
+        confidence="nominal",
+        satellite="NOAA-20",
+        day_night="D",
+    )
+
+    insert_detection(connection, existing_detection)
+
+    inserted_count = insert_detections(
+        connection,
+        [existing_detection, new_detection, second_new_detection],
+    )
+
+    actual = connection.execute("SELECT COUNT(*) FROM detections;").fetchone()
+
+    connection.close()
+
+    assert inserted_count == 2
+    assert actual == (3,)

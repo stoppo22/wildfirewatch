@@ -60,3 +60,16 @@ def insert_detection(
     )
 
     return cursor.rowcount == 1
+
+
+def insert_detections(
+    connection: sqlite3.Connection,
+    detections: list[Detection],
+) -> int:
+    counter = 0
+
+    for detection in detections:
+        if insert_detection(connection, detection):
+            counter += 1
+
+    return counter
