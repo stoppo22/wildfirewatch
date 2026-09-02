@@ -3,7 +3,7 @@
 import sqlite3
 from datetime import datetime, timezone
 
-from wildfirewatch.models import Detection, FireEvent
+from wildfirewatch.models import Detection, FireEvent, EventObservation
 from wildfirewatch.database import (
     create_tables,
     insert_detection,
@@ -318,4 +318,86 @@ def test_upsert_fire_event_updates_existing_event():
     )
 
     assert row_count == (1,)
+    assert actual == expected
+
+
+def test_upsert_fire_event_saves_event_observations():
+    connection = sqlite3.connect(":memory:")
+    create_tables(connection)
+
+    observation = EventObservation(
+        first_seen_utc=datetime(2026, 9, 2, 18, 30, tzinfo=timezone.utc),
+        last_seen_utc=datetime(2026, 9, 2, 19, 30, tzinfo=timezone.utc),
+        centroid_latitude=22.878,
+        centroid_longitude=-158.674,
+        max_radius_km=10,
+        detection_count=4,
+        total_frp=2,
+    )
+
+    second_observation = EventObservation(
+        first_seen_utc=datetime(2026, 9, 2, 18, 30, tzinfo=timezone.utc),
+        last_seen_utc=datetime(2026, 9, 2, 21, 30, tzinfo=timezone.utc),
+        centroid_latitude=20.878,
+        centroid_longitude=-156.674,
+        max_radius_km=10,
+        detection_count=4,
+        total_frp=2,
+    )
+
+    event = FireEvent(
+        event_id=7,
+        first_seen_utc=datetime(2026, 9, 2, 18, 30, tzinfo=timezone.utc),
+        last_seen_utc=datetime(2026, 9, 2, 21, 30, tzinfo=timezone.utc),
+        centroid_latitude=22.878,
+        centroid_longitude=-158.674,
+        detection_count=4,
+        observations=[observation, second_observation],
+    )
+
+    upsert_fire_event(connection, event)
+    upsert_fire_event(connection, event)
+
+    actual = connection.execute("""
+        SELECT
+            event_id,
+            observation_index,
+            first_seen_utc,
+            last_seen_utc,
+            centroid_latitude,
+            centroid_longitude,
+            max_radius_km,
+            detection_count,
+            total_frp
+        FROM event_observations
+        ORDER BY observation_index;
+        """).fetchall()
+
+    connection.close()
+
+    expected = [
+        (
+            7,
+            0,
+            "2026-09-02T18:30:00+00:00",
+            "2026-09-02T19:30:00+00:00",
+            22.878,
+            -158.674,
+            10,
+            4,
+            2,
+        ),
+        (
+            7,
+            1,
+            "2026-09-02T18:30:00+00:00",
+            "2026-09-02T21:30:00+00:00",
+            20.878,
+            -156.674,
+            10,
+            4,
+            2,
+        ),
+    ]
+
     assert actual == expected

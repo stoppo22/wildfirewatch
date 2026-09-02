@@ -40,6 +40,27 @@ def create_tables(connection: sqlite3.Connection) -> None:
         );
         """)
 
+    connection.execute("""
+        CREATE TABLE IF NOT EXISTS event_observations (
+            event_id INTEGER NOT NULL,
+            observation_index INTEGER NOT NULL,
+            first_seen_utc TEXT NOT NULL,
+            last_seen_utc TEXT NOT NULL,
+            centroid_latitude REAL NOT NULL,
+            centroid_longitude REAL NOT NULL,
+            max_radius_km REAL NOT NULL,
+            detection_count INTEGER NOT NULL,
+            total_frp REAL NOT NULL,
+            PRIMARY KEY (
+                event_id,
+                observation_index
+            ),
+            FOREIGN KEY (event_id)
+                REFERENCES fire_events(event_id)
+                ON DELETE CASCADE
+        );
+        """)
+
 
 def insert_detection(
     connection: sqlite3.Connection,
@@ -117,3 +138,40 @@ def upsert_fire_event(
             event.detection_count,
         ),
     )
+
+    connection.execute(
+        """
+        DELETE FROM event_observations
+        WHERE event_id = ?;
+        """,
+        (event.event_id,),
+    )
+
+    for observation_index, observation in enumerate(event.observations):
+        connection.execute(
+            """
+            INSERT INTO event_observations (
+                event_id,
+                observation_index,
+                first_seen_utc,
+                last_seen_utc,
+                centroid_latitude,
+                centroid_longitude,
+                max_radius_km,
+                detection_count,
+                total_frp
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+            """,
+            (
+                event.event_id,
+                observation_index,
+                observation.first_seen_utc.isoformat(),
+                observation.last_seen_utc.isoformat(),
+                observation.centroid_latitude,
+                observation.centroid_longitude,
+                observation.max_radius_km,
+                observation.detection_count,
+                observation.total_frp,
+            ),
+        )
