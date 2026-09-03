@@ -1,6 +1,6 @@
 # Persistence and incremental processing
 
-This document describes the v0.4 SQLite work implemented so far. FIRMS rows
+This document describes the completed v0.4 SQLite work. FIRMS rows
 remain satellite-observed thermal anomalies, and stored `FireEvent` objects
 remain candidate events rather than confirmed wildfires.
 

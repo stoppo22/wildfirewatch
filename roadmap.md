@@ -125,6 +125,8 @@ Done when:
 - README claims use measured numbers only.
 
 ## v0.4 — Persistence and incremental processing
+Status: implementation complete; v0.4.0 release candidate awaiting review and tag.
+
 Build:
 - SQLite;
 - persistent detections/events;

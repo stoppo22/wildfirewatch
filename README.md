@@ -5,9 +5,9 @@
 WildfireWatch is a learning-first Python project for turning raw NASA FIRMS
 active-fire detections into clean, tested candidate fire events.
 
-> **Status:** v0.3.0 is complete. v0.4 is in progress with SQLite persistence,
-> idempotent detection ingestion, persistent event history, restart-safe event
-> loading, and an incremental processing command.
+> **Status:** v0.4.0 is a release candidate awaiting final review and tag. It
+> adds SQLite persistence, idempotent detection ingestion, restart-safe event
+> history, incremental processing, transaction logging, and GitHub Actions CI.
 
 FIRMS detections are satellite-observed thermal anomalies. They are not
 necessarily confirmed wildfires, and WildfireWatch is not an emergency,
@@ -18,8 +18,10 @@ safety, or authoritative fire-detection system.
 ```mermaid
 flowchart LR
     A[NASA FIRMS<br/>thermal anomalies] --> B[Normalize<br/>Detection objects]
-    B --> C[Spatial<br/>clustering]
+    B --> H[(SQLite<br/>detections)]
+    H -- new only --> C[Spatial<br/>clustering]
     C --> D[Track candidate<br/>events over time]
+    D <--> I[(SQLite events<br/>and history)]
     D --> E[Historical<br/>replay]
     D --> F[Evaluation<br/>metrics]
     G[Reference<br/>perimeter] --> F
@@ -96,6 +98,20 @@ is an observation-based movement proxy, not proof of physical fire movement.
 The difference between the last and first observed radii provides a simple net
 spatial-growth proxy. All intermediate radii remain available in the history,
 because the net value alone can hide expansion and contraction between them.
+
+## v0.4.0 scope
+
+WildfireWatch now stores normalized detections, candidate-event summaries, and
+ordered event observations in a local SQLite database. Exact normalized
+detections are idempotent, while event rows use UPSERT semantics so an existing
+stable `event_id` is updated instead of duplicated. Foreign keys protect the
+event-to-observation relationship.
+
+The incremental pipeline loads stored events after a restart, processes only
+new detections in chronological frames, applies one-to-one tracking, and saves
+the updated state in one caller-owned transaction. A dedicated command logs
+received detections, newly inserted detections, and stored event count.
+GitHub Actions runs all tests and checks Black on every push and pull request.
 
 ## Data flow
 
@@ -383,6 +399,7 @@ license; source metadata and the reproducible command are recorded in
 wildfirewatch/
 ├── wildfirewatch/
 │   ├── clustering.py
+│   ├── database.py
 │   ├── evaluation.py
 │   ├── evaluation_scenarios.py
 │   ├── event_metrics.py
@@ -390,10 +407,12 @@ wildfirewatch/
 │   ├── geo.py
 │   ├── ingestion.py
 │   ├── models.py
+│   ├── pipeline.py
 │   ├── replay.py
 │   ├── spatial_evaluation.py
 │   ├── summary.py
 │   └── tracking.py
+├── .github/workflows/ci.yml
 ├── tests/
 ├── scripts/
 ├── evaluation/results/
@@ -448,7 +467,11 @@ See [roadmap.md](roadmap.md) for planned versions and project milestones.
 - Centroid path and radius change describe changes in satellite observations;
   they are not validated measurements of physical fire spread or burned area.
 - The main `python -m wildfirewatch` command still exposes only ingestion;
-  evaluation and replay currently use dedicated scripts.
+  incremental processing, evaluation, and replay use dedicated scripts.
+- Incremental processing assumes newly encountered detections arrive in
+  chronological order. Previously unseen late data may form a separate event.
+- SQLite usage is currently local and single-process oriented; concurrent
+  writers and schema migrations are not yet supported.
 - Synthetic labels verify controlled behavior but are not validation against
   confirmed wildfire perimeters.
 - The historical replay uses exploratory thresholds. In its third frame the
