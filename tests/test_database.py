@@ -373,6 +373,18 @@ def test_upsert_fire_event_saves_event_observations():
         FROM event_observations
         ORDER BY observation_index;
         """).fetchall()
+    connection.execute(
+        """
+        DELETE FROM fire_events
+        WHERE event_id = ?;
+        """,
+        (event.event_id,),
+    )
+
+    remaining_observation_count = connection.execute("""
+        SELECT COUNT(*)
+        FROM event_observations;
+    """).fetchone()
 
     connection.close()
 
@@ -402,6 +414,7 @@ def test_upsert_fire_event_saves_event_observations():
     ]
 
     assert actual == expected
+    assert remaining_observation_count == (0,)
 
 
 def test_load_fire_events_restores_event_after_reopening_database(tmp_path):
@@ -440,3 +453,15 @@ def test_load_fire_events_restores_event_after_reopening_database(tmp_path):
     reopened_connection.close()
 
     assert actual == [event]
+
+
+def test_create_tables_enables_foreign_keys():
+    connection = sqlite3.connect(":memory:")
+
+    create_tables(connection)
+
+    actual = connection.execute("PRAGMA foreign_keys;").fetchone()
+
+    connection.close()
+
+    assert actual == (1,)

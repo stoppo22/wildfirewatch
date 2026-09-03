@@ -7,6 +7,8 @@ from wildfirewatch.models import Detection, FireEvent, EventObservation
 
 
 def create_tables(connection: sqlite3.Connection) -> None:
+    connection.execute("PRAGMA foreign_keys = ON;")
+
     connection.execute("""
         CREATE TABLE IF NOT EXISTS detections (
             id INTEGER PRIMARY KEY,
