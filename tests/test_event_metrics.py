@@ -6,6 +6,7 @@ import pytest
 
 from wildfirewatch.event_metrics import (
     calculate_centroid_path_km,
+    calculate_mean_frp_change,
     calculate_radius_change_km,
 )
 from wildfirewatch.models import EventObservation, FireEvent
@@ -108,4 +109,39 @@ def test_history_metrics_are_zero_without_observations():
     )
 
     assert calculate_centroid_path_km(event) == 0.0
+    assert calculate_mean_frp_change(event) == 0.0
     assert calculate_radius_change_km(event) == 0.0
+
+
+def test_calculate_mean_frp_change_compares_first_and_last_means():
+    first = EventObservation(
+        first_seen_utc=datetime(2023, 8, 9, 10, 0, tzinfo=timezone.utc),
+        last_seen_utc=datetime(2023, 8, 9, 10, 0, tzinfo=timezone.utc),
+        centroid_latitude=20.0,
+        centroid_longitude=-156.0,
+        max_radius_km=1.0,
+        detection_count=2,
+        total_frp=40.0,
+    )
+    last = EventObservation(
+        first_seen_utc=datetime(2023, 8, 9, 12, 0, tzinfo=timezone.utc),
+        last_seen_utc=datetime(2023, 8, 9, 12, 0, tzinfo=timezone.utc),
+        centroid_latitude=20.0,
+        centroid_longitude=-156.0,
+        max_radius_km=1.0,
+        detection_count=3,
+        total_frp=90.0,
+    )
+    event = FireEvent(
+        event_id=1,
+        first_seen_utc=first.first_seen_utc,
+        last_seen_utc=last.last_seen_utc,
+        centroid_latitude=20.0,
+        centroid_longitude=-156.0,
+        detection_count=5,
+        observations=[first, last],
+    )
+
+    actual = calculate_mean_frp_change(event)
+
+    assert actual == 10.0

@@ -30,3 +30,20 @@ def calculate_radius_change_km(event: FireEvent) -> float:
     last_observation = event.observations[-1]
 
     return last_observation.max_radius_km - first_observation.max_radius_km
+
+
+def calculate_mean_frp_change(event: FireEvent) -> float:
+    """Return the change in mean FRP per detection from first to last observation."""
+    if len(event.observations) < 2:
+        return 0.0
+
+    first_observation = event.observations[0]
+    last_observation = event.observations[-1]
+
+    if first_observation.detection_count <= 0 or last_observation.detection_count <= 0:
+        raise ValueError("observation detection_count must be positive")
+
+    first_mean_frp = first_observation.total_frp / first_observation.detection_count
+    last_mean_frp = last_observation.total_frp / last_observation.detection_count
+
+    return last_mean_frp - first_mean_frp
