@@ -6,8 +6,11 @@ import pytest
 
 from wildfirewatch.models import EventObservation, FireEvent
 from wildfirewatch.scoring import (
+    PriorityScore,
+    ScoringConfig,
     calculate_frp_trend_component,
     calculate_persistence_component,
+    calculate_priority_score,
     calculate_spatial_growth_component,
 )
 
@@ -143,4 +146,50 @@ def test_spatial_growth_component_rejects_non_positive_threshold():
         calculate_spatial_growth_component(
             event,
             full_score_radius_increase_km=0,
+        )
+
+
+def test_priority_score_preserves_total_and_component_points():
+    event = make_event(duration_hours=12)
+    event.observations = [
+        EventObservation(
+            first_seen_utc=event.first_seen_utc,
+            last_seen_utc=event.first_seen_utc,
+            centroid_latitude=event.centroid_latitude,
+            centroid_longitude=event.centroid_longitude,
+            max_radius_km=1.0,
+            detection_count=2,
+            total_frp=40.0,
+        ),
+        EventObservation(
+            first_seen_utc=event.last_seen_utc,
+            last_seen_utc=event.last_seen_utc,
+            centroid_latitude=event.centroid_latitude,
+            centroid_longitude=event.centroid_longitude,
+            max_radius_km=2.0,
+            detection_count=2,
+            total_frp=60.0,
+        ),
+    ]
+
+    actual = calculate_priority_score(event)
+
+    assert actual == PriorityScore(
+        total=50.0,
+        persistence_points=20.0,
+        frp_trend_points=17.5,
+        spatial_growth_points=12.5,
+    )
+
+
+def test_scoring_config_rejects_weights_that_do_not_sum_to_100():
+    with pytest.raises(ValueError, match="scoring weights must sum to 100"):
+        ScoringConfig(persistence_weight=41.0)
+
+
+def test_scoring_config_rejects_negative_weight():
+    with pytest.raises(ValueError, match="scoring weights must not be negative"):
+        ScoringConfig(
+            persistence_weight=-1.0,
+            frp_trend_weight=76.0,
         )
