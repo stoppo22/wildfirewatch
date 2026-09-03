@@ -8,6 +8,7 @@ from wildfirewatch.models import EventObservation, FireEvent
 from wildfirewatch.scoring import (
     calculate_frp_trend_component,
     calculate_persistence_component,
+    calculate_spatial_growth_component,
 )
 
 
@@ -98,4 +99,48 @@ def test_frp_trend_component_rejects_non_positive_threshold():
         calculate_frp_trend_component(
             event,
             full_score_mean_frp_increase=0,
+        )
+
+
+def test_spatial_growth_component_is_half_at_half_threshold():
+    event = make_event(duration_hours=2)
+    event.observations = [
+        EventObservation(
+            first_seen_utc=event.first_seen_utc,
+            last_seen_utc=event.first_seen_utc,
+            centroid_latitude=event.centroid_latitude,
+            centroid_longitude=event.centroid_longitude,
+            max_radius_km=1.0,
+            detection_count=1,
+            total_frp=10.0,
+        ),
+        EventObservation(
+            first_seen_utc=event.last_seen_utc,
+            last_seen_utc=event.last_seen_utc,
+            centroid_latitude=event.centroid_latitude,
+            centroid_longitude=event.centroid_longitude,
+            max_radius_km=2.0,
+            detection_count=1,
+            total_frp=10.0,
+        ),
+    ]
+
+    actual = calculate_spatial_growth_component(
+        event,
+        full_score_radius_increase_km=2,
+    )
+
+    assert actual == 0.5
+
+
+def test_spatial_growth_component_rejects_non_positive_threshold():
+    event = make_event(duration_hours=2)
+
+    with pytest.raises(
+        ValueError,
+        match="full_score_radius_increase_km must be positive",
+    ):
+        calculate_spatial_growth_component(
+            event,
+            full_score_radius_increase_km=0,
         )
