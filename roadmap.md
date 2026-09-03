@@ -152,7 +152,7 @@ Done when:
 This is already a very strong stopping point for internship screening if polished well.
 
 ## v0.5 — Environmental context
-Status: implementation complete; v0.5.0 release candidate awaiting review and tag.
+Status: completed as v0.5.0.
 
 Use Google Earth Engine only after event tracking/evaluation is stable.
 

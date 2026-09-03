@@ -5,9 +5,9 @@
 WildfireWatch is a learning-first Python project for turning raw NASA FIRMS
 active-fire detections into clean, tested candidate fire events.
 
-> **Status:** the v0.5.0 implementation is complete and ready for release
-> review. It adds cached ESA WorldCover land-cover context through Google Earth
-> Engine while preserving the persistent incremental pipeline from v0.4.0.
+> **Status:** v0.5.0 is complete. It adds cached ESA WorldCover land-cover
+> context through Google Earth Engine while preserving the persistent
+> incremental pipeline from v0.4.0.
 
 FIRMS detections are satellite-observed thermal anomalies. They are not
 necessarily confirmed wildfires, and WildfireWatch is not an emergency,
