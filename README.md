@@ -256,6 +256,34 @@ raises an exception, it rolls the transaction back before closing the
 connection. See [persistence and incremental processing](docs/persistence-and-incremental-processing.md)
 for the schema, data flow, guarantees, and current limitations.
 
+## Enrich events with land-cover context
+
+WildfireWatch v0.5 uses the
+[ESA WorldCover 10 m 2021 v200](https://developers.google.com/earth-engine/datasets/catalog/ESA_WorldCover_v200)
+dataset through Google Earth Engine. Register a noncommercial Earth Engine
+Cloud project, authenticate locally, and add its project ID to the ignored
+`.env` file:
+
+```text
+EARTH_ENGINE_PROJECT=your-google-cloud-project-id
+```
+
+Enrich the events already stored in SQLite:
+
+```bash
+python scripts/enrich_events.py data/wildfirewatch.db
+```
+
+The command samples the WorldCover `Map` band at each event centroid and
+caches the code, sampled coordinates, and dataset ID in SQLite. Running it a
+second time reuses cached values instead of repeating Earth Engine requests.
+On the committed Lahaina sample, the first run reports `2 fetched, 0 cached`
+and the second reports `0 fetched, 2 cached`.
+
+This is contextual information, not a fire classification: a centroid labeled
+`built_up`, for example, does not mean that the entire event area is urban or
+that the thermal anomaly was caused by an urban fire.
+
 ## Run the tests
 
 With the virtual environment activated:
