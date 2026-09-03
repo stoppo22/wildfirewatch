@@ -3,10 +3,9 @@
 WildfireWatch is a learning-first Python project for turning raw NASA FIRMS
 active-fire detections into clean, tested candidate fire events.
 
-> **Status:** v0.3.0 is complete with controlled evaluation metrics,
-> threshold-sensitivity experiments, baseline versus one-to-one tracking,
-> historical replay visualization, and spatial reference coverage for a
-> bounded FIRMS dataset around Lahaina.
+> **Status:** v0.3.0 is complete. v0.4 is in progress with SQLite persistence,
+> idempotent detection ingestion, persistent event history, restart-safe event
+> loading, and an incremental processing command.
 
 FIRMS detections are satellite-observed thermal anomalies. They are not
 necessarily confirmed wildfires, and WildfireWatch is not an emergency,
@@ -217,6 +216,26 @@ Detections: 5
 First acquired (UTC): 2025-06-06T00:01:00+00:00
 Last acquired (UTC): 2025-06-06T00:01:00+00:00
 ```
+
+## Run incremental SQLite processing
+
+Process a FIRMS CSV into a persistent local database:
+
+```bash
+python -m scripts.run_incremental_processing \
+  data/raw/viirs_noaa20_nrt_sample.csv \
+  --database data/wildfirewatch.db
+```
+
+Run the same command again to verify idempotency. The log reports the number
+of received detections, newly inserted detections, and stored candidate
+events; the second run should report `new=0`. Local `*.db`, `*.sqlite`, and
+`*.sqlite3` files are ignored by Git.
+
+The command commits detection and event changes together. If processing
+raises an exception, it rolls the transaction back before closing the
+connection. See [persistence and incremental processing](docs/persistence-and-incremental-processing.md)
+for the schema, data flow, guarantees, and current limitations.
 
 ## Run the tests
 

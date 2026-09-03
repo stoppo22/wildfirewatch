@@ -4,6 +4,9 @@ __pycache__/
 .pytest_cache/
 .venv/
 .env
+*.db
+*.sqlite
+*.sqlite3
 data/reference/
 
 .DS_Store
