@@ -5,9 +5,9 @@
 WildfireWatch is a learning-first Python project for turning raw NASA FIRMS
 active-fire detections into clean, tested candidate fire events.
 
-> **Status:** v0.5.0 is complete. It adds cached ESA WorldCover land-cover
-> context through Google Earth Engine while preserving the persistent
-> incremental pipeline from v0.4.0.
+> **Status:** v0.6 implementation is complete and awaiting release. It adds
+> transparent candidate-event ranking and reproducible weight/threshold
+> sensitivity analysis.
 
 FIRMS detections are satellite-observed thermal anomalies. They are not
 necessarily confirmed wildfires, and WildfireWatch is not an emergency,
@@ -25,6 +25,10 @@ flowchart LR
     D --> E[Historical<br/>replay]
     D --> F[Evaluation<br/>metrics]
     G[Reference<br/>perimeter] --> F
+    D --> J[Persistence, FRP trend,<br/>spatial growth]
+    J --> K[Explainable<br/>review priority]
+    I --> L[WorldCover<br/>context]
+    L -. displayed alongside .-> K
 ```
 
 ![Three-panel Lahaina historical replay](evaluation/results/lahaina_replay_one_to_one.png)
@@ -169,6 +173,16 @@ historical FIRMS detections + local reference Polygon
 See [evaluation and replay notes](docs/evaluation-and-replay.md) for the
 methodology, commands, measured results, and limitations.
 
+The v0.6 scoring path is:
+
+```text
+persisted candidate events
+    -> normalized persistence, mean-FRP trend, and radius-growth components
+    -> explicit weighted 0-100 score
+    -> low/medium/high review-priority label and contribution breakdown
+    -> rankings compared under multiple weights and thresholds
+```
+
 ## Detection model
 
 | Internal field | FIRMS source | Normalization |
@@ -285,6 +299,29 @@ that the thermal anomaly was caused by an urban fire. See
 [environmental context](docs/environmental-context.md) for the schema,
 testing strategy, reproducible result, and current limitations.
 
+## Rank candidate events and analyze sensitivity
+
+Print an explainable ranking of the events stored in SQLite:
+
+```bash
+python scripts/rank_events.py data/wildfirewatch.db
+```
+
+Generate the reproducible sensitivity report:
+
+```bash
+python scripts/run_scoring_sensitivity.py data/wildfirewatch.db
+```
+
+The report compares the default configuration with persistence-heavy,
+FRP-trend-heavy, spatial-growth-heavy, lenient-threshold, and strict-threshold
+scenarios. In the bounded two-event Lahaina replay, event 1 remains first in
+all six scenarios, while its score ranges from 19.74 to 59.21. Both FRP-trend
+and spatial-growth contributions are zero in this replay, so this result shows
+stability of the ordering only for the available events; it does not validate
+the selected weights. See [priority scoring](docs/priority-scoring.md) for the
+formulas, measured results, and limitations.
+
 ## Run the tests
 
 With the virtual environment activated:
@@ -364,6 +401,9 @@ The tests currently document:
   polygons, plus historical detection coverage calculations.
 - WorldCover class-name mapping, SQLite context round trips, cache reuse, and
   missing-value behavior without network access in CI.
+- priority-component normalization, contribution totals, classification
+  boundaries, deterministic ranking, and weight-sensitive ordering.
+- generation of an explainable scoring-sensitivity report from SQLite.
 
 ## Format the code
 
@@ -442,6 +482,7 @@ wildfirewatch/
 │   ├── models.py
 │   ├── pipeline.py
 │   ├── replay.py
+│   ├── scoring.py
 │   ├── spatial_evaluation.py
 │   ├── summary.py
 │   └── tracking.py
@@ -480,6 +521,12 @@ See [roadmap.md](roadmap.md) for planned versions and project milestones.
   anomalies.
 - Environmental context currently samples one 2021 WorldCover pixel at each
   event centroid and may not represent the full event area.
+- Priority scores are transparent ranking heuristics, not validated danger,
+  spread, severity, or emergency-risk predictions. The current weights and
+  thresholds are exploratory.
+- The two-event Lahaina sensitivity report is dominated by persistence because
+  both measured FRP-trend and spatial-growth contributions are zero. It cannot
+  establish general stability or scientific validity.
 - The current model performs type conversion but does not yet validate
   coordinate ranges or normalize confidence/day-night codes.
 - Geographic distances approximate Earth as a sphere with a mean radius; they

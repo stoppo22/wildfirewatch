@@ -9,7 +9,12 @@ from wildfirewatch.evaluation import (
     evaluate_assignments,
     track_labeled_clusters,
 )
-from wildfirewatch.models import Detection
+from wildfirewatch.models import Detection, FireEvent
+from wildfirewatch.scoring import (
+    PriorityScore,
+    ScoringConfig,
+    rank_events_by_priority,
+)
 
 
 @dataclass(frozen=True)
@@ -20,6 +25,15 @@ class ThresholdExperimentResult:
     max_time_gap: timedelta
     metrics: EvaluationResult
     runtime_seconds: float
+
+
+@dataclass(frozen=True)
+class ScoringExperimentResult:
+    """Store the ranked events produced by one scoring configuration."""
+
+    name: str
+    config: ScoringConfig
+    ranked_events: list[tuple[FireEvent, PriorityScore]]
 
 
 def _evaluate_threshold_configuration(
@@ -88,3 +102,24 @@ def evaluate_time_gap_thresholds(
         )
         for max_time_gap in time_gap_thresholds
     ]
+
+
+def evaluate_scoring_configs(
+    events: list[FireEvent],
+    named_configs: dict[str, ScoringConfig],
+) -> list[ScoringExperimentResult]:
+    """Rank the same events with multiple scoring configurations."""
+    results = []
+
+    for name, config in named_configs.items():
+        ranked_events = rank_events_by_priority(events, config)
+
+        results.append(
+            ScoringExperimentResult(
+                name=name,
+                config=config,
+                ranked_events=ranked_events,
+            )
+        )
+
+    return results

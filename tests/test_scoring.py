@@ -13,6 +13,7 @@ from wildfirewatch.scoring import (
     calculate_priority_score,
     calculate_spatial_growth_component,
     classify_priority_level,
+    rank_events_by_priority,
 )
 
 
@@ -194,6 +195,18 @@ def test_scoring_config_rejects_negative_weight():
             persistence_weight=-1.0,
             frp_trend_weight=76.0,
         )
+
+
+def test_rank_events_by_priority_orders_by_score_then_event_id():
+    highest = make_event(duration_hours=24)
+    tied_second = make_event(duration_hours=12)
+    tied_second.event_id = 2
+    tied_third = make_event(duration_hours=12)
+    tied_third.event_id = 3
+
+    ranked = rank_events_by_priority([tied_third, highest, tied_second])
+
+    assert [event.event_id for event, _ in ranked] == [1, 2, 3]
 
 
 @pytest.mark.parametrize(

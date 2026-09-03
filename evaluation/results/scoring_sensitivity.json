@@ -1,0 +1,217 @@
+{
+  "kind": "scoring_sensitivity_analysis",
+  "disclaimer": "Heuristic candidate-event review priority; not a validated danger or emergency-risk score.",
+  "event_count": 2,
+  "scenarios": [
+    {
+      "name": "default",
+      "config": {
+        "full_score_hours": 24.0,
+        "full_score_mean_frp_increase": 20.0,
+        "full_score_radius_increase_km": 2.0,
+        "persistence_weight": 40.0,
+        "frp_trend_weight": 35.0,
+        "spatial_growth_weight": 25.0
+      },
+      "ranking": [
+        {
+          "rank": 1,
+          "event_id": 1,
+          "score": 39.472222,
+          "priority": "medium",
+          "components": {
+            "persistence_points": 39.472222,
+            "frp_trend_points": 0.0,
+            "spatial_growth_points": 0.0
+          }
+        },
+        {
+          "rank": 2,
+          "event_id": 2,
+          "score": 0.0,
+          "priority": "low",
+          "components": {
+            "persistence_points": 0.0,
+            "frp_trend_points": 0.0,
+            "spatial_growth_points": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "name": "persistence_heavy",
+      "config": {
+        "full_score_hours": 24.0,
+        "full_score_mean_frp_increase": 20.0,
+        "full_score_radius_increase_km": 2.0,
+        "persistence_weight": 60.0,
+        "frp_trend_weight": 25.0,
+        "spatial_growth_weight": 15.0
+      },
+      "ranking": [
+        {
+          "rank": 1,
+          "event_id": 1,
+          "score": 59.208333,
+          "priority": "medium",
+          "components": {
+            "persistence_points": 59.208333,
+            "frp_trend_points": 0.0,
+            "spatial_growth_points": 0.0
+          }
+        },
+        {
+          "rank": 2,
+          "event_id": 2,
+          "score": 0.0,
+          "priority": "low",
+          "components": {
+            "persistence_points": 0.0,
+            "frp_trend_points": 0.0,
+            "spatial_growth_points": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "name": "frp_trend_heavy",
+      "config": {
+        "full_score_hours": 24.0,
+        "full_score_mean_frp_increase": 20.0,
+        "full_score_radius_increase_km": 2.0,
+        "persistence_weight": 25.0,
+        "frp_trend_weight": 60.0,
+        "spatial_growth_weight": 15.0
+      },
+      "ranking": [
+        {
+          "rank": 1,
+          "event_id": 1,
+          "score": 24.670139,
+          "priority": "low",
+          "components": {
+            "persistence_points": 24.670139,
+            "frp_trend_points": 0.0,
+            "spatial_growth_points": 0.0
+          }
+        },
+        {
+          "rank": 2,
+          "event_id": 2,
+          "score": 0.0,
+          "priority": "low",
+          "components": {
+            "persistence_points": 0.0,
+            "frp_trend_points": 0.0,
+            "spatial_growth_points": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "name": "spatial_growth_heavy",
+      "config": {
+        "full_score_hours": 24.0,
+        "full_score_mean_frp_increase": 20.0,
+        "full_score_radius_increase_km": 2.0,
+        "persistence_weight": 25.0,
+        "frp_trend_weight": 20.0,
+        "spatial_growth_weight": 55.0
+      },
+      "ranking": [
+        {
+          "rank": 1,
+          "event_id": 1,
+          "score": 24.670139,
+          "priority": "low",
+          "components": {
+            "persistence_points": 24.670139,
+            "frp_trend_points": 0.0,
+            "spatial_growth_points": 0.0
+          }
+        },
+        {
+          "rank": 2,
+          "event_id": 2,
+          "score": 0.0,
+          "priority": "low",
+          "components": {
+            "persistence_points": 0.0,
+            "frp_trend_points": 0.0,
+            "spatial_growth_points": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "name": "lenient_thresholds",
+      "config": {
+        "full_score_hours": 12.0,
+        "full_score_mean_frp_increase": 10.0,
+        "full_score_radius_increase_km": 1.0,
+        "persistence_weight": 40.0,
+        "frp_trend_weight": 35.0,
+        "spatial_growth_weight": 25.0
+      },
+      "ranking": [
+        {
+          "rank": 1,
+          "event_id": 1,
+          "score": 40.0,
+          "priority": "medium",
+          "components": {
+            "persistence_points": 40.0,
+            "frp_trend_points": 0.0,
+            "spatial_growth_points": 0.0
+          }
+        },
+        {
+          "rank": 2,
+          "event_id": 2,
+          "score": 0.0,
+          "priority": "low",
+          "components": {
+            "persistence_points": 0.0,
+            "frp_trend_points": 0.0,
+            "spatial_growth_points": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "name": "strict_thresholds",
+      "config": {
+        "full_score_hours": 48.0,
+        "full_score_mean_frp_increase": 40.0,
+        "full_score_radius_increase_km": 4.0,
+        "persistence_weight": 40.0,
+        "frp_trend_weight": 35.0,
+        "spatial_growth_weight": 25.0
+      },
+      "ranking": [
+        {
+          "rank": 1,
+          "event_id": 1,
+          "score": 19.736111,
+          "priority": "low",
+          "components": {
+            "persistence_points": 19.736111,
+            "frp_trend_points": 0.0,
+            "spatial_growth_points": 0.0
+          }
+        },
+        {
+          "rank": 2,
+          "event_id": 2,
+          "score": 0.0,
+          "priority": "low",
+          "components": {
+            "persistence_points": 0.0,
+            "frp_trend_points": 0.0,
+            "spatial_growth_points": 0.0
+          }
+        }
+      ]
+    }
+  ]
+}

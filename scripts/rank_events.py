@@ -8,8 +8,8 @@ from wildfirewatch.database import load_fire_events, load_land_cover_context
 from wildfirewatch.environment import land_cover_name
 from wildfirewatch.scoring import (
     ScoringConfig,
-    calculate_priority_score,
     classify_priority_level,
+    rank_events_by_priority,
 )
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -57,16 +57,16 @@ def main() -> None:
     connection = sqlite3.connect(database_path)
     try:
         events = load_fire_events(connection)
-        ranked_events = []
-
-        for event in events:
-            score = calculate_priority_score(event, config)
-            context = load_land_cover_context(connection, event.event_id)
-            ranked_events.append((event, score, context))
+        ranked_events = [
+            (
+                event,
+                score,
+                load_land_cover_context(connection, event.event_id),
+            )
+            for event, score in rank_events_by_priority(events, config)
+        ]
     finally:
         connection.close()
-
-    ranked_events.sort(key=lambda item: (-item[1].total, item[0].event_id))
 
     print("Candidate-event review priority; not a danger or emergency-risk score.")
     for event, score, context in ranked_events:

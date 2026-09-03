@@ -117,6 +117,22 @@ def calculate_priority_score(
     )
 
 
+def rank_events_by_priority(
+    events: list[FireEvent],
+    config: ScoringConfig = ScoringConfig(),
+) -> list[tuple[FireEvent, PriorityScore]]:
+    """Score events and rank them from highest to lowest review priority."""
+    ranked_events = []
+
+    for event in events:
+        score = calculate_priority_score(event, config)
+        ranked_events.append((event, score))
+
+    ranked_events.sort(key=lambda item: (-item[1].total, item[0].event_id))
+
+    return ranked_events
+
+
 def classify_priority_level(total_score: float) -> str:
     """Classify a review-priority score as low, medium, or high."""
     if total_score < 0 or total_score > 100:
