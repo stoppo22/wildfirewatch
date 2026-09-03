@@ -3,13 +3,20 @@
 import sqlite3
 from datetime import datetime, timezone
 
-from wildfirewatch.models import Detection, FireEvent, EventObservation
+from wildfirewatch.models import (
+    Detection,
+    EventObservation,
+    FireEvent,
+    LandCoverContext,
+)
 from wildfirewatch.database import (
     create_tables,
     insert_detection,
     insert_detections,
-    upsert_fire_event,
+    load_land_cover_context,
     load_fire_events,
+    upsert_fire_event,
+    upsert_land_cover_context,
 )
 
 
@@ -465,3 +472,31 @@ def test_create_tables_enables_foreign_keys():
     connection.close()
 
     assert actual == (1,)
+
+
+def test_land_cover_context_round_trip():
+    connection = sqlite3.connect(":memory:")
+    create_tables(connection)
+    event = FireEvent(
+        event_id=7,
+        first_seen_utc=datetime(2023, 8, 9, 12, 15, tzinfo=timezone.utc),
+        last_seen_utc=datetime(2023, 8, 9, 13, 15, tzinfo=timezone.utc),
+        centroid_latitude=20.878,
+        centroid_longitude=-156.674,
+        detection_count=2,
+    )
+    context = LandCoverContext(
+        event_id=event.event_id,
+        class_code=50,
+        sampled_latitude=event.centroid_latitude,
+        sampled_longitude=event.centroid_longitude,
+        dataset="ESA/WorldCover/v200",
+    )
+    upsert_fire_event(connection, event)
+
+    upsert_land_cover_context(connection, context)
+    actual = load_land_cover_context(connection, event.event_id)
+
+    connection.close()
+
+    assert actual == context

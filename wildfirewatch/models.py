@@ -37,6 +37,15 @@ class EventObservation:
     total_frp: float
 
 
+@dataclass(frozen=True)
+class LandCoverContext:
+    event_id: int
+    class_code: int
+    sampled_latitude: float
+    sampled_longitude: float
+    dataset: str
+
+
 @dataclass
 class FireEvent:
     event_id: int

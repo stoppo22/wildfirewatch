@@ -3,7 +3,12 @@
 import sqlite3
 from datetime import datetime
 
-from wildfirewatch.models import Detection, FireEvent, EventObservation
+from wildfirewatch.models import (
+    Detection,
+    EventObservation,
+    FireEvent,
+    LandCoverContext,
+)
 
 
 def create_tables(connection: sqlite3.Connection) -> None:
@@ -57,6 +62,19 @@ def create_tables(connection: sqlite3.Connection) -> None:
                 event_id,
                 observation_index
             ),
+            FOREIGN KEY (event_id)
+                REFERENCES fire_events(event_id)
+                ON DELETE CASCADE
+        );
+        """)
+
+    connection.execute("""
+        CREATE TABLE IF NOT EXISTS event_land_cover (
+            event_id INTEGER PRIMARY KEY,
+            class_code INTEGER NOT NULL,
+            sampled_latitude REAL NOT NULL,
+            sampled_longitude REAL NOT NULL,
+            dataset TEXT NOT NULL,
             FOREIGN KEY (event_id)
                 REFERENCES fire_events(event_id)
                 ON DELETE CASCADE
@@ -243,3 +261,63 @@ def load_fire_events(
         )
 
     return events
+
+
+def upsert_land_cover_context(
+    connection: sqlite3.Connection,
+    context: LandCoverContext,
+) -> None:
+    connection.execute(
+        """
+        INSERT INTO event_land_cover (
+            event_id,
+            class_code,
+            sampled_latitude,
+            sampled_longitude,
+            dataset
+        )
+        VALUES (?, ?, ?, ?, ?)
+        ON CONFLICT(event_id) DO UPDATE SET
+            class_code = excluded.class_code,
+            sampled_latitude = excluded.sampled_latitude,
+            sampled_longitude = excluded.sampled_longitude,
+            dataset = excluded.dataset;
+        """,
+        (
+            context.event_id,
+            context.class_code,
+            context.sampled_latitude,
+            context.sampled_longitude,
+            context.dataset,
+        ),
+    )
+
+
+def load_land_cover_context(
+    connection: sqlite3.Connection,
+    event_id: int,
+) -> LandCoverContext | None:
+    row = connection.execute(
+        """
+        SELECT
+            event_id,
+            class_code,
+            sampled_latitude,
+            sampled_longitude,
+            dataset
+        FROM event_land_cover
+        WHERE event_id = ?;
+        """,
+        (event_id,),
+    ).fetchone()
+
+    if row is None:
+        return None
+
+    return LandCoverContext(
+        event_id=row[0],
+        class_code=row[1],
+        sampled_latitude=row[2],
+        sampled_longitude=row[3],
+        dataset=row[4],
+    )

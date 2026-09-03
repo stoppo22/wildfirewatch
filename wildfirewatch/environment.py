@@ -1,6 +1,14 @@
 """Environmental context extraction for WildfireWatch."""
 
+import sqlite3
+
 import ee
+
+from wildfirewatch.database import (
+    load_land_cover_context,
+    upsert_land_cover_context,
+)
+from wildfirewatch.models import FireEvent, LandCoverContext
 
 WORLD_COVER_DATASET = "ESA/WorldCover/v200"
 WORLD_COVER_BAND = "Map"
@@ -47,3 +55,33 @@ def fetch_land_cover_code(
         return None
 
     return int(result)
+
+
+def get_or_fetch_land_cover_context(
+    connection: sqlite3.Connection,
+    event: FireEvent,
+) -> LandCoverContext | None:
+    cached_context = load_land_cover_context(connection, event.event_id)
+
+    if cached_context is not None:
+        return cached_context
+
+    class_code = fetch_land_cover_code(
+        event.centroid_latitude,
+        event.centroid_longitude,
+    )
+
+    if class_code is None:
+        return None
+
+    context = LandCoverContext(
+        event_id=event.event_id,
+        class_code=class_code,
+        sampled_latitude=event.centroid_latitude,
+        sampled_longitude=event.centroid_longitude,
+        dataset=WORLD_COVER_DATASET,
+    )
+
+    upsert_land_cover_context(connection, context)
+
+    return context
