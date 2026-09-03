@@ -5,8 +5,8 @@
 WildfireWatch is a learning-first Python project for turning raw NASA FIRMS
 active-fire detections into clean, tested candidate fire events.
 
-> **Status:** v0.6.0 is complete. It adds transparent candidate-event ranking
-> and reproducible weight/threshold sensitivity analysis.
+> **Status:** v0.6.0 is complete. v0.7 development now exposes the first
+> tested HTTP endpoints for candidate-event summaries and details.
 
 FIRMS detections are satellite-observed thermal anomalies. They are not
 necessarily confirmed wildfires, and WildfireWatch is not an emergency,
@@ -28,6 +28,8 @@ flowchart LR
     J --> K[Explainable<br/>review priority]
     I --> L[WorldCover<br/>context]
     L -. displayed alongside .-> K
+    K --> M[FastAPI<br/>JSON API]
+    M --> N[Interactive map<br/>v0.7 in progress]
 ```
 
 ![Three-panel Lahaina historical replay](evaluation/results/lahaina_replay_one_to_one.png)
@@ -231,6 +233,28 @@ python -m pip install -e ".[dev]"
 
 The editable installation means changes to the local source code are used
 without reinstalling the package after every edit.
+
+## Run the local API
+
+First create or update the local SQLite database using the incremental
+processing command. Then start the development server:
+
+```bash
+python -m uvicorn wildfirewatch.api:app --reload
+```
+
+The initial v0.7 API exposes:
+
+| Method and path | Behavior |
+| --- | --- |
+| `GET /api/health` | report that the API is running |
+| `GET /api/events` | return all persisted candidate-event summaries |
+| `GET /api/events/{event_id}` | return one event or `404` when absent |
+| `GET /docs` | open FastAPI's generated interactive API documentation |
+
+By default the API reads the ignored local database at
+`data/wildfirewatch.db`. The server is a local development interface, not an
+emergency-monitoring or public deployment.
 
 ## Run the current pipeline
 

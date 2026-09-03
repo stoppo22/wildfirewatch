@@ -9,13 +9,16 @@ description = "Learning-first processing of NASA FIRMS active-fire detections"
 requires-python = ">=3.11"
 dependencies = [
     "earthengine-api>=1.7,<2",
+    "fastapi>=0.141,<1",
     "matplotlib>=3.8,<4",
     "python-dotenv>=1.0,<2",
+    "uvicorn>=0.52,<1",
 ]
 
 [project.optional-dependencies]
 dev = [
     "black~=26.0",
+    "httpx2>=2.12,<3",
     "pytest>=8",
 ]
 
