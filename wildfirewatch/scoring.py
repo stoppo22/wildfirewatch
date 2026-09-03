@@ -115,3 +115,17 @@ def calculate_priority_score(
         frp_trend_points=frp_trend_points,
         spatial_growth_points=spatial_growth_points,
     )
+
+
+def classify_priority_level(total_score: float) -> str:
+    """Classify a review-priority score as low, medium, or high."""
+    if total_score < 0 or total_score > 100:
+        raise ValueError("total_score must be between 0 and 100")
+
+    if total_score < 33:
+        return "low"
+
+    if total_score < 67:
+        return "medium"
+
+    return "high"

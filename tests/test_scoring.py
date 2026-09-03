@@ -12,6 +12,7 @@ from wildfirewatch.scoring import (
     calculate_persistence_component,
     calculate_priority_score,
     calculate_spatial_growth_component,
+    classify_priority_level,
 )
 
 
@@ -193,3 +194,24 @@ def test_scoring_config_rejects_negative_weight():
             persistence_weight=-1.0,
             frp_trend_weight=76.0,
         )
+
+
+@pytest.mark.parametrize(
+    ("total_score", "expected"),
+    [
+        (0.0, "low"),
+        (32.0, "low"),
+        (33.0, "medium"),
+        (66.0, "medium"),
+        (67.0, "high"),
+        (100.0, "high"),
+    ],
+)
+def test_classify_priority_level_respects_boundaries(total_score, expected):
+    assert classify_priority_level(total_score) == expected
+
+
+@pytest.mark.parametrize("total_score", [-1.0, 101.0])
+def test_classify_priority_level_rejects_out_of_range_score(total_score):
+    with pytest.raises(ValueError, match="total_score must be between 0 and 100"):
+        classify_priority_level(total_score)
