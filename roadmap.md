@@ -175,7 +175,7 @@ Done when:
 - its meaning and limitations are documented.
 
 ## v0.6 — Interpretable priority scoring
-Status: implementation complete; release tag pending.
+Status: completed as v0.6.0.
 
 Build:
 - rank candidate events using transparent signals such as persistence, FRP trend, spatial growth and environmental context;

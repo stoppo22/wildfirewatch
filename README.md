@@ -5,9 +5,8 @@
 WildfireWatch is a learning-first Python project for turning raw NASA FIRMS
 active-fire detections into clean, tested candidate fire events.
 
-> **Status:** v0.6 implementation is complete and awaiting release. It adds
-> transparent candidate-event ranking and reproducible weight/threshold
-> sensitivity analysis.
+> **Status:** v0.6.0 is complete. It adds transparent candidate-event ranking
+> and reproducible weight/threshold sensitivity analysis.
 
 FIRMS detections are satellite-observed thermal anomalies. They are not
 necessarily confirmed wildfires, and WildfireWatch is not an emergency,
@@ -173,7 +172,7 @@ historical FIRMS detections + local reference Polygon
 See [evaluation and replay notes](docs/evaluation-and-replay.md) for the
 methodology, commands, measured results, and limitations.
 
-The v0.6 scoring path is:
+The v0.6.0 scoring path is:
 
 ```text
 persisted candidate events

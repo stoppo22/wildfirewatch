@@ -1,6 +1,6 @@
 # Interpretable priority scoring
 
-WildfireWatch v0.6 ranks persisted candidate fire events for human review. The
+WildfireWatch v0.6.0 ranks persisted candidate fire events for human review. The
 score is deliberately a transparent heuristic: it is not a validated danger,
 severity, spread, or emergency-risk prediction.
 
