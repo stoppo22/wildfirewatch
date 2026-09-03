@@ -5,10 +5,9 @@
 WildfireWatch is a learning-first Python project for turning raw NASA FIRMS
 active-fire detections into clean, tested candidate fire events.
 
-> **Status:** the v0.4.0 implementation is complete and ready for release
-> tagging. It adds SQLite persistence, idempotent detection ingestion,
-> restart-safe event history, incremental processing, transaction logging, and
-> GitHub Actions CI.
+> **Status:** the v0.5.0 implementation is complete and ready for release
+> review. It adds cached ESA WorldCover land-cover context through Google Earth
+> Engine while preserving the persistent incremental pipeline from v0.4.0.
 
 FIRMS detections are satellite-observed thermal anomalies. They are not
 necessarily confirmed wildfires, and WildfireWatch is not an emergency,
@@ -282,7 +281,9 @@ and the second reports `0 fetched, 2 cached`.
 
 This is contextual information, not a fire classification: a centroid labeled
 `built_up`, for example, does not mean that the entire event area is urban or
-that the thermal anomaly was caused by an urban fire.
+that the thermal anomaly was caused by an urban fire. See
+[environmental context](docs/environmental-context.md) for the schema,
+testing strategy, reproducible result, and current limitations.
 
 ## Run the tests
 
@@ -361,6 +362,8 @@ The tests currently document:
   history behavior.
 - point-in-polygon behavior for internal, external, boundary, and invalid
   polygons, plus historical detection coverage calculations.
+- WorldCover class-name mapping, SQLite context round trips, cache reuse, and
+  missing-value behavior without network access in CI.
 
 ## Format the code
 
@@ -429,6 +432,7 @@ wildfirewatch/
 ├── wildfirewatch/
 │   ├── clustering.py
 │   ├── database.py
+│   ├── environment.py
 │   ├── evaluation.py
 │   ├── evaluation_scenarios.py
 │   ├── event_metrics.py
@@ -474,6 +478,8 @@ See [roadmap.md](roadmap.md) for planned versions and project milestones.
   56-row historical replay subset from a single VIIRS source.
 - NRT detections are not ground truth and may include non-wildfire thermal
   anomalies.
+- Environmental context currently samples one 2021 WorldCover pixel at each
+  event centroid and may not represent the full event area.
 - The current model performs type conversion but does not yet validate
   coordinate ranges or normalize confidence/day-night codes.
 - Geographic distances approximate Earth as a sphere with a mean radius; they
