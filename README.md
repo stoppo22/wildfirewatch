@@ -1,5 +1,7 @@
 # WildfireWatch
 
+[![CI](https://github.com/stoppo22/wildfirewatch/actions/workflows/ci.yml/badge.svg)](https://github.com/stoppo22/wildfirewatch/actions/workflows/ci.yml)
+
 WildfireWatch is a learning-first Python project for turning raw NASA FIRMS
 active-fire detections into clean, tested candidate fire events.
 
@@ -244,6 +246,11 @@ With the virtual environment activated:
 ```bash
 python -m pytest
 ```
+
+GitHub Actions runs the complete test suite and `black --check` automatically
+on every push and pull request using Python 3.11, the project's minimum
+supported version. The CI badge at the top of this README links to the latest
+workflow runs.
 
 ## Run the v0.3 experiments
 
