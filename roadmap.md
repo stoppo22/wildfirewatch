@@ -125,7 +125,7 @@ Done when:
 - README claims use measured numbers only.
 
 ## v0.4 — Persistence and incremental processing
-Status: implementation complete; v0.4.0 release candidate awaiting review and tag.
+Status: completed as v0.4.0.
 
 Build:
 - SQLite;
@@ -152,6 +152,8 @@ Done when:
 This is already a very strong stopping point for internship screening if polished well.
 
 ## v0.5 — Environmental context
+Status: in progress.
+
 Use Google Earth Engine only after event tracking/evaluation is stable.
 
 Start with one contextual variable:
