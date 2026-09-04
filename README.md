@@ -249,7 +249,7 @@ The initial v0.7 API exposes:
 | --- | --- |
 | `GET /api/health` | report that the API is running |
 | `GET /api/events` | return all persisted candidate-event summaries |
-| `GET /api/events/{event_id}` | return one event or `404` when absent |
+| `GET /api/events/{event_id}` | return one event with metrics, priority, land cover, and observation history, or `404` when absent |
 | `GET /docs` | open FastAPI's generated interactive API documentation |
 
 By default the API reads the ignored local database at
