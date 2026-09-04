@@ -226,7 +226,7 @@ Done when:
 - the replay/demo communicates the project in under a minute.
 
 ## v1.0 — Polished release
-Status: completed as v1.0.0; release tag pending final approval.
+Status: completed and released as v1.0.0.
 
 Build:
 - clean repository;

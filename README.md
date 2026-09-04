@@ -6,8 +6,8 @@ WildfireWatch turns NASA FIRMS satellite thermal-anomaly detections into
 persistent candidate fire events that can be inspected through a tested API
 and an interactive map.
 
-> **Current version:** v1.0.0. The processing pipeline, evaluation artifacts,
-> local API, interactive map, and reproducible demo are release-ready.
+> **Latest release:** v1.0.0. The processing pipeline, evaluation artifacts,
+> local API, interactive map, and reproducible demo are ready to use.
 
 FIRMS detections are not confirmed wildfires. WildfireWatch is a research
 prototype, not an emergency, safety, or authoritative detection system.
