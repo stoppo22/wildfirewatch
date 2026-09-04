@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "wildfirewatch"
 version = "0.7.0"
-description = "Learning-first processing of NASA FIRMS active-fire detections"
+description = "Track and evaluate candidate fire events from NASA FIRMS detections"
 requires-python = ">=3.11"
 dependencies = [
     "earthengine-api>=1.7,<2",

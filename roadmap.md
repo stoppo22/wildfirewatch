@@ -1,13 +1,11 @@
 # WildfireWatch — Roadmap
 
 ## Goal
-WildfireWatch is a learning-first geospatial software engineering project that turns NASA FIRMS active-fire detections into candidate tracked fire events, evaluates how well those events are reconstructed, enriches them with environmental context, ranks them with an interpretable priority score, and eventually exposes them through an interactive map.
+WildfireWatch turns NASA FIRMS active-fire detections into candidate tracked fire events, evaluates how well those events are reconstructed, enriches them with environmental context, ranks them with an interpretable priority score, and exposes them through an interactive map.
 
-Two equal goals:
-1. learn real software engineering and algorithms;
-2. build a strong, honest portfolio project for internship applications.
-
-A polished v0.3/v0.4 is more valuable than a rushed v1.0.
+Development priorities:
+1. keep the core algorithms transparent and tested;
+2. report capabilities, measurements, and limitations honestly.
 
 ## v0.0 — Foundation and FIRMS ingestion
 Status: completed as v0.0.0.
@@ -19,10 +17,9 @@ Build:
 - define a simple `Detection` representation;
 - print useful summaries;
 - introduce first simple pytest tests;
-- introduce Black as one consistent Python formatter after basic formatting
-  conventions have been understood manually.
+- configure Black as one consistent Python formatter.
 
-Learn:
+Technical focus:
 - Python modules;
 - CSV/files;
 - timestamps;
@@ -39,7 +36,7 @@ Done when:
 - malformed/empty inputs are handled reasonably;
 - simple tests pass;
 - the code can be formatted consistently with one documented command;
-- the user can explain every important field and transformation.
+- every important field and transformation is documented and explainable.
 
 ## v0.1 — Geographic primitives and clustering baseline
 Status: completed as v0.1.0.
@@ -50,7 +47,7 @@ Build:
 - group nearby detections into candidate clusters;
 - calculate basic cluster summaries.
 
-Learn:
+Technical focus:
 - latitude/longitude;
 - Haversine distance;
 - algorithm design;
@@ -61,7 +58,7 @@ Learn:
 Done when:
 - clustering behavior is predictable on controlled examples;
 - tests document expected behavior;
-- the user can explain the algorithm and its time complexity.
+- the algorithm and its time complexity are documented.
 
 ## v0.2 — Spatiotemporal event tracking
 Status: completed as v0.2.0.
@@ -74,7 +71,7 @@ Important:
 - do not force every cluster into an existing event;
 - later, associations may expose an interpretable confidence score.
 
-Learn:
+Technical focus:
 - state over time;
 - temporal windows;
 - matching/association;
@@ -86,12 +83,12 @@ Done when:
 - repeated observations can be linked into stable event IDs;
 - disappearing/new events are handled;
 - tracking tests cover clear matches and non-matches;
-- the user can explain why two clusters are considered the same event.
+- event-association criteria are explicit and documented.
 
 ## v0.3 — Evaluation, algorithm comparison and historical replay
 Status: completed as v0.3.0.
 
-This is the first major CV-worthy checkpoint.
+This is the first major evaluation checkpoint.
 
 Build:
 - create a reproducible evaluation framework;
@@ -110,7 +107,7 @@ Historical fire replay:
 - update events using only information available up to that moment;
 - visualize how the reconstruction evolves.
 
-Learn:
+Technical focus:
 - benchmarks;
 - experimental design;
 - metrics;
@@ -136,7 +133,7 @@ Build:
 - repeatable/idempotent processing where possible;
 - basic GitHub Actions CI for tests and a formatter check.
 
-Learn:
+Technical focus:
 - relational databases;
 - schemas;
 - persistence;
@@ -149,7 +146,7 @@ Done when:
 - processing new detections updates stored events;
 - tests run automatically in CI.
 
-This is already a very strong stopping point for internship screening if polished well.
+This is a stable foundation for the product and API layers.
 
 ## v0.5 — Environmental context
 Status: completed as v0.5.0.
@@ -161,7 +158,7 @@ Start with one contextual variable:
 - land cover, or
 - historical fire activity.
 
-Learn:
+Technical focus:
 - raster/geospatial datasets;
 - external APIs;
 - spatial queries;
@@ -184,7 +181,7 @@ Build:
 Important:
 - this is an event-ranking heuristic, not a validated danger/emergency-risk model.
 
-Learn:
+Technical focus:
 - feature design;
 - normalization;
 - rule systems;
@@ -215,7 +212,7 @@ Possible event view:
 - event timeline;
 - historical replay.
 
-Learn:
+Technical focus:
 - HTTP;
 - REST/backend APIs;
 - FastAPI or similar;
@@ -242,7 +239,7 @@ Build:
 - clear limitations;
 - technical write-up.
 
-The user should be able to explain:
+Release documentation must explain:
 - the real problem;
 - why raw detections are not enough;
 - the baseline;
@@ -283,7 +280,7 @@ Do NOT cut:
 - measured results;
 - understanding.
 
-## Portfolio target
-The strongest version is not the one with the most technologies. It is the one where the user can truthfully explain the system, algorithm, evaluation, tradeoffs, failures and measured results.
+## Quality target
+The strongest version is not the one with the most technologies. It is the one whose system, algorithms, evaluation, tradeoffs, failures, and measured results are explicit and reproducible.
 
-Every number eventually placed on the CV must come from a reproducible measurement.
+Every reported number must come from a reproducible measurement.
