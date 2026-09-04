@@ -214,6 +214,12 @@ async function loadEvents() {
     eventList.append(button);
     addEventToMap(event, button);
   }
+
+  const firstButton = eventList.querySelector(".event-item");
+
+  if (firstButton !== null) {
+    firstButton.click();
+  }
 }
 
 loadEvents().catch((error) => {

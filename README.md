@@ -12,6 +12,13 @@ FIRMS detections are satellite-observed thermal anomalies. They are not
 necessarily confirmed wildfires, and WildfireWatch is not an emergency,
 safety, or authoritative fire-detection system.
 
+![WildfireWatch interactive event explorer](docs/images/wildfirewatch-event-explorer.png)
+
+*Local v0.7 explorer showing persisted candidate events around Lahaina and the
+explainable metrics for the selected event. Colored circular markers represent
+WildfireWatch candidate events; other symbols belong to the OpenStreetMap base
+map. Review priority is heuristic and is not emergency risk.*
+
 ## At a glance
 
 ```mermaid
