@@ -29,3 +29,8 @@ jobs:
 
       - name: Run tests
         run: python -m pytest
+
+      - name: Verify packaged web assets
+        run: |
+          python -m pip wheel . --no-deps --wheel-dir /tmp/wildfirewatch-wheel
+          test "$(unzip -Z1 /tmp/wildfirewatch-wheel/*.whl | grep -Ec '^wildfirewatch/web/(index.html|styles.css|app.js)$')" -eq 3

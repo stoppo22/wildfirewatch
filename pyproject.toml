@@ -25,6 +25,9 @@ dev = [
 [tool.setuptools]
 packages = ["wildfirewatch"]
 
+[tool.setuptools.package-data]
+wildfirewatch = ["web/*.html", "web/*.css", "web/*.js"]
+
 [tool.black]
 line-length = 88
 target-version = ["py311"]

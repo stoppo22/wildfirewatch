@@ -25,9 +25,8 @@ from wildfirewatch.event_metrics import (
     calculate_radius_change_km,
 )
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_DATABASE_PATH = PROJECT_ROOT / "data" / "wildfirewatch.db"
-WEB_ROOT = PROJECT_ROOT / "web"
+DEFAULT_DATABASE_PATH = Path("data/wildfirewatch.db")
+WEB_ROOT = Path(__file__).resolve().parent / "web"
 
 app = FastAPI(
     title="WildfireWatch",
