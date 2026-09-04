@@ -19,6 +19,35 @@ explainable metrics for the selected event. Colored circular markers represent
 WildfireWatch candidate events; other symbols belong to the OpenStreetMap base
 map. Review priority is heuristic and is not emergency risk.*
 
+## Quick start
+
+Create and activate a virtual environment:
+
+```bash
+# Windows Git Bash
+python -m venv .venv
+source .venv/Scripts/activate
+
+# macOS or Linux
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+Install the project, reconstruct the two-event Lahaina demo from the committed
+56-detection historical sample, and start the local application:
+
+```bash
+python -m pip install -e ".[dev]"
+python -m scripts.run_incremental_processing \
+  data/raw/viirs_noaa20_sp_lahaina_2023-08-08_2023-08-12.csv \
+  --database data/wildfirewatch.db
+python -m uvicorn wildfirewatch.api:app --reload
+```
+
+Open `http://127.0.0.1:8000`. No API key is required for this local demo.
+Land-cover values remain `Unknown` until the optional Earth Engine enrichment
+step is run.
+
 ## At a glance
 
 ```mermaid
