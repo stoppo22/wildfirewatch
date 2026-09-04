@@ -196,6 +196,9 @@ Done when:
 - weight/threshold sensitivity is evaluated.
 
 ## v0.7 — Backend and interactive product
+
+Status: completed as v0.7.0.
+
 Architecture:
 processing pipeline -> SQLite -> backend API -> interactive web map
 

@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    >
+    <link rel="stylesheet" href="/static/styles.css">
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      defer
+    ></script>
+    <script src="/static/app.js" defer></script>
+    <title>WildfireWatch</title>
+  </head>
+
+  <body>
+    <main class="app-shell">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">NASA FIRMS event analysis</p>
+          <h1>WildfireWatch</h1>
+          <p class="hero-copy">
+            A local research interface for inspecting thermal-anomaly
+            detections grouped into candidate fire events.
+          </p>
+        </div>
+
+        <div class="demo-status" aria-label="Application status">
+          <span class="status-dot" aria-hidden="true"></span>
+          Local research demo
+        </div>
+      </header>
+
+      <section class="workspace" aria-label="Candidate event explorer">
+        <aside class="sidebar">
+          <div>
+            <p class="panel-label">Database</p>
+            <h2>Candidate events</h2>
+            <p class="panel-copy">
+              Choose an event from this list. The matching location will be
+              highlighted on the map and its details will appear here.
+            </p>
+          </div>
+
+          <div id="event-list" class="event-list" aria-live="polite">
+            <div class="empty-state">
+              <strong>Events not loaded yet</strong>
+              <p>
+                The next JavaScript step will retrieve candidate events from
+                <code>/api/events</code> and add them to this list.
+              </p>
+            </div>
+          </div>
+
+          <section
+            id="event-details"
+            class="event-details"
+            aria-label="Selected event details"
+            aria-live="polite"
+          >
+            <p class="details-placeholder">
+              Select an event to inspect its measurements.
+            </p>
+          </section>
+
+          <p class="disclaimer">
+            Thermal anomalies and candidate events are not confirmed wildfires.
+            This interface is not for emergency or safety decisions.
+          </p>
+        </aside>
+
+        <section class="map-panel" aria-label="Map panel">
+          <div class="map-toolbar">
+            <div>
+              <p class="panel-label">Historical case study</p>
+              <h2>Lahaina, August 2023</h2>
+            </div>
+            <span class="source-badge">NASA FIRMS / VIIRS</span>
+          </div>
+
+          <div class="map-frame">
+            <div id="map" aria-label="Candidate fire events map"></div>
+
+            <div class="map-legend" aria-label="Review priority legend">
+              <span><i class="legend-dot low"></i>Low</span>
+              <span><i class="legend-dot medium"></i>Medium</span>
+              <span><i class="legend-dot high"></i>High</span>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+  </body>
+</html>

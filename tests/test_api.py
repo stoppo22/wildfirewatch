@@ -149,3 +149,11 @@ def test_observation_to_response_rejects_zero_detections():
         match="observation detection_count must be positive",
     ):
         observation_to_response(observation)
+
+
+def test_index_returns_html_page():
+    response = client.get("/")
+
+    assert response.status_code == 200
+    assert response.headers["content-type"].startswith("text/html")
+    assert "<h1>WildfireWatch</h1>" in response.text

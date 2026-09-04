@@ -5,6 +5,8 @@ from datetime import datetime
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, ConfigDict
 
 from wildfirewatch.database import (
@@ -25,10 +27,18 @@ from wildfirewatch.event_metrics import (
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_DATABASE_PATH = PROJECT_ROOT / "data" / "wildfirewatch.db"
+WEB_ROOT = PROJECT_ROOT / "web"
 
 app = FastAPI(
     title="WildfireWatch",
     version="0.7.0",
+)
+
+
+app.mount(
+    "/static",
+    StaticFiles(directory=WEB_ROOT),
+    name="static",
 )
 
 
@@ -218,6 +228,12 @@ def load_event_detail(
         connection.close()
 
     return None
+
+
+@app.get("/", include_in_schema=False)
+def index() -> FileResponse:
+    """Return the interactive WildfireWatch page."""
+    return FileResponse(WEB_ROOT / "index.html")
 
 
 @app.get("/api/health", response_model=HealthResponse)

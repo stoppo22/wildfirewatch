@@ -5,8 +5,8 @@
 WildfireWatch is a learning-first Python project for turning raw NASA FIRMS
 active-fire detections into clean, tested candidate fire events.
 
-> **Status:** v0.6.0 is complete. v0.7 development now exposes the first
-> tested HTTP endpoints for candidate-event summaries and details.
+> **Status:** v0.7.0 is complete. A tested FastAPI backend now serves persisted
+> candidate events to a local interactive map and event-detail view.
 
 FIRMS detections are satellite-observed thermal anomalies. They are not
 necessarily confirmed wildfires, and WildfireWatch is not an emergency,
@@ -29,7 +29,7 @@ flowchart LR
     I --> L[WorldCover<br/>context]
     L -. displayed alongside .-> K
     K --> M[FastAPI<br/>JSON API]
-    M --> N[Interactive map<br/>v0.7 in progress]
+    M --> N[Interactive map<br/>and event details]
 ```
 
 ![Three-panel Lahaina historical replay](evaluation/results/lahaina_replay_one_to_one.png)
@@ -243,10 +243,17 @@ processing command. Then start the development server:
 python -m uvicorn wildfirewatch.api:app --reload
 ```
 
-The initial v0.7 API exposes:
+Open `http://127.0.0.1:8000` to use the local event explorer. The sidebar lists
+persisted candidate events, the map places them at their centroids, and a
+selection shows timestamps, detections, land cover, evolution metrics, and the
+three explainable contributions to review priority. Marker colors represent
+heuristic review priority, not wildfire certainty, danger, or emergency risk.
+
+The v0.7 application exposes:
 
 | Method and path | Behavior |
 | --- | --- |
+| `GET /` | open the local interactive candidate-event map |
 | `GET /api/health` | report that the API is running |
 | `GET /api/events` | return all persisted candidate-event summaries |
 | `GET /api/events/{event_id}` | return one event with metrics, priority, land cover, and observation history, or `404` when absent |
