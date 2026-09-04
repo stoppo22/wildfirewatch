@@ -158,3 +158,5 @@ context. Setup is documented in `.env.example` and the
 - [Priority scoring](docs/priority-scoring.md)
 - [Data sources and provenance](data/README.md)
 - [Development roadmap](roadmap.md)
+
+Released under the [MIT License](LICENSE).
