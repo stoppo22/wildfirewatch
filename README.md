@@ -6,8 +6,8 @@ WildfireWatch turns NASA FIRMS satellite thermal-anomaly detections into
 persistent candidate fire events that can be inspected through a tested API
 and an interactive map.
 
-> **Latest release:** v0.7.0. The v1.0 work focuses on reproducibility,
-> documentation, benchmarks, and release quality.
+> **Current version:** v1.0.0. The processing pipeline, evaluation artifacts,
+> local API, interactive map, and reproducible demo are release-ready.
 
 FIRMS detections are not confirmed wildfires. WildfireWatch is a research
 prototype, not an emergency, safety, or authoritative detection system.
@@ -49,7 +49,7 @@ The committed Lahaina subset provides a small reproducible case study:
 | One-to-one tracking | 2 final candidate events |
 | Reference-perimeter coverage | 67.86% of detections inside or on the polygon |
 | Priority sensitivity | Event 1 ranked first in all 6 tested configurations |
-| Cold local pipeline benchmark | 29.25 ms median across 15 fresh SQLite runs |
+| Cold local pipeline benchmark | 28.57 ms median across 15 fresh SQLite runs |
 
 These results describe one bounded experiment. The 67.86% value is a spatial
 consistency measurement, not tracking accuracy, precision, or recall. The

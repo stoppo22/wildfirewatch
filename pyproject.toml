@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "wildfirewatch"
-version = "0.7.0"
+version = "1.0.0"
 description = "Track and evaluate candidate fire events from NASA FIRMS detections"
 readme = "README.md"
 license = "MIT"
@@ -29,7 +29,7 @@ Repository = "https://github.com/stoppo22/wildfirewatch"
 Issues = "https://github.com/stoppo22/wildfirewatch/issues"
 
 [tool.setuptools]
-packages = ["wildfirewatch"]
+packages = ["wildfirewatch", "wildfirewatch.web"]
 
 [tool.setuptools.package-data]
 wildfirewatch = ["web/*.html", "web/*.css", "web/*.js"]

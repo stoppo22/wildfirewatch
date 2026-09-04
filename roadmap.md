@@ -222,10 +222,12 @@ Technical focus:
 
 Done when:
 - events are served through an API;
-- a user can inspect an event without reading raw data;
+- event details can be inspected without reading raw data;
 - the replay/demo communicates the project in under a minute.
 
 ## v1.0 — Polished release
+Status: completed as v1.0.0; release tag pending final approval.
+
 Build:
 - clean repository;
 - strong README;

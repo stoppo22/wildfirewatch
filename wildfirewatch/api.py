@@ -30,7 +30,7 @@ WEB_ROOT = Path(__file__).resolve().parent / "web"
 
 app = FastAPI(
     title="WildfireWatch",
-    version="0.7.0",
+    version="1.0.0",
 )
 
 
