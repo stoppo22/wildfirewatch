@@ -1,0 +1,14 @@
+{
+  "kind": "local_pipeline_benchmark",
+  "scope": "CSV loading, SQLite schema creation, incremental clustering, event tracking, and SQLite commit on a fresh local database.",
+  "dataset": "data/raw/viirs_noaa20_sp_lahaina_2023-08-08_2023-08-12.csv",
+  "detection_count": 56,
+  "event_count": 2,
+  "run_count": 15,
+  "duration_seconds": {
+    "median": 0.028572999999596504,
+    "minimum": 0.02791129999968689,
+    "maximum": 0.036528399999951944
+  },
+  "limitations": "Wall-clock timings depend on the local machine and are not a cross-hardware performance comparison."
+}

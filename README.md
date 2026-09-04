@@ -49,11 +49,16 @@ The committed Lahaina subset provides a small reproducible case study:
 | One-to-one tracking | 2 final candidate events |
 | Reference-perimeter coverage | 67.86% of detections inside or on the polygon |
 | Priority sensitivity | Event 1 ranked first in all 6 tested configurations |
+| Cold local pipeline benchmark | 29.25 ms median across 15 fresh SQLite runs |
 
 These results describe one bounded experiment. The 67.86% value is a spatial
 consistency measurement, not tracking accuracy, precision, or recall. The
 available reference polygon does not provide event identities or temporal
 ground truth.
+
+The runtime is a wall-clock measurement on the development machine, not a
+cross-hardware performance comparison. The reproducible benchmark script is
+[`scripts/run_pipeline_benchmark.py`](scripts/run_pipeline_benchmark.py).
 
 ![Three-panel Lahaina historical replay](evaluation/results/lahaina_replay_one_to_one.png)
 

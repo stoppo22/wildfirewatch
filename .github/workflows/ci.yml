@@ -30,6 +30,9 @@ jobs:
       - name: Run tests
         run: python -m pytest
 
+      - name: Run reproducible benchmark
+        run: python -m scripts.run_pipeline_benchmark
+
       - name: Verify packaged web assets
         run: |
           python -m pip wheel . --no-deps --wheel-dir /tmp/wildfirewatch-wheel
