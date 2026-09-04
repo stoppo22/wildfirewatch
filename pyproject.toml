@@ -6,6 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "wildfirewatch"
 version = "0.7.0"
 description = "Track and evaluate candidate fire events from NASA FIRMS detections"
+readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "earthengine-api>=1.7,<2",
@@ -21,6 +22,10 @@ dev = [
     "httpx2>=2.12,<3",
     "pytest>=8",
 ]
+
+[project.urls]
+Repository = "https://github.com/stoppo22/wildfirewatch"
+Issues = "https://github.com/stoppo22/wildfirewatch/issues"
 
 [tool.setuptools]
 packages = ["wildfirewatch"]
